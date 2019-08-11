@@ -3,6 +3,7 @@ import {
   getFilterFormMarkup,
   getSortingMarkup,
   getRouteMarkup,
+  getEditFormMarkup,
   getContentMarkup,
   renderComponent,
 } from './components';
@@ -27,4 +28,8 @@ renderComponent(tripControls, getMenuWrappedMarkup(menuElements), `afterbegin`);
 renderComponent(tripControls, getFilterFormMarkup(filterElements), `beforeend`);
 renderComponent(tripEvents, getSortingMarkup(), `beforeend`);
 renderComponent(tripEvents, getContentMarkup(), `beforeend`);
+
+const tripEventsList = document.querySelector(`.trip-events__list`);
+
+renderComponent(tripEventsList, getEditFormMarkup(), `afterbegin`);
 
