@@ -1,6 +1,6 @@
 export const CITIES = [`Asterdam`, `Brusseles`, `Barcelona`, `Cologne`];
 export const PLACE_TYPES = [`Check-in`, `Restaurant`, `Sightseeing`];
-export const ACTION_TYPES = [`Bus`, `Drive`, `Flight`, `Ship`, `Taxi`, `Train`, `Transport`, `Trip`];
+export const ACTION_TYPES = [`Bus`, `Drive`, `Flight`, `Ship`, `Taxi`, `Train`, `Transport`];
 export const DESCRIPTION = [`Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
   `Cras aliquet varius magna, non porta ligula feugiat eget.`,
   `Fusce tristique felis at fermentum pharetra.`,

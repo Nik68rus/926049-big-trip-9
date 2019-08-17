@@ -628,8 +628,6 @@ main {
     background-image: url("../img/icons/bus.png"); }
   .event__type-label--train::before {
     background-image: url("../img/icons/train.png"); }
-  .event__type-label--trip::before {
-    background-image: url("../img/icons/trip.png"); }
   .event__type-label--ship::before {
     background-image: url("../img/icons/ship.png"); }
   .event__type-label--transport::before {
