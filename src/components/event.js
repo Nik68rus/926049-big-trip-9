@@ -1,4 +1,4 @@
-import {formatDateMarkup, formatTime, formatDuration} from './util';
+import {formatDateMarkup, formatTime} from './util';
 import {PLACE_TYPES} from '../constants';
 
 const getOfferItemMarkup = ({title, price}) => {
@@ -13,7 +13,27 @@ const getOfferItemMarkup = ({title, price}) => {
 
 const getOfferMarkup = (offers) => offers.map((offer) => getOfferItemMarkup(offer)).join(`\n`);
 
-export const getEventMarkup = ({type, city, timeStart, duration, price, offers}) => {
+const addZero = (number) => number < 10 ? `0` + number : number;
+
+const getDurationMarkup = (time) => {
+  const duration = time.end - time.start;
+  let durationString = ``;
+  const days = Math.trunc(duration / (24 * 60 * 60 * 1000));
+  const hours = Math.trunc((duration - days * 24 * 60 * 60 * 1000) / (60 * 60 * 1000));
+  const minutes = Math.trunc((duration - days * 24 * 60 * 60 * 1000 - hours * 60 * 60 * 1000) / (60 * 1000));
+  if (days === 0) {
+    durationString = addZero(minutes) + `M`;
+  }
+  if (hours > 0) {
+    durationString = addZero(hours) + `H ` + durationString;
+  }
+  if (days > 0) {
+    durationString = addZero(days) + `D ` + durationString;
+  }
+  return durationString;
+};
+
+export const getEventMarkup = ({type, city, time, price, offers}) => {
   return `
   <li class="trip-events__item">
     <div class="event">
@@ -24,11 +44,11 @@ export const getEventMarkup = ({type, city, timeStart, duration, price, offers})
 
       <div class="event__schedule">
         <p class="event__time">
-          <time class="event__start-time" datetime="${formatDateMarkup(timeStart)}T${formatTime(timeStart)}">${formatTime(timeStart)}</time>
+          <time class="event__start-time" datetime="${formatDateMarkup(time.start)}T${formatTime(time.start)}">${formatTime(time.start)}</time>
           &mdash;
-          <time class="event__end-time" datetime="${formatDateMarkup(timeStart + duration)}T${formatTime(timeStart + duration)}">${formatTime(timeStart + duration)}</time>
+          <time class="event__end-time" datetime="${formatDateMarkup(time.end)}T${formatTime(time.end)}">${formatTime(time.end)}</time>
         </p>
-        <p class="event__duration">${formatDuration(duration)}</p>
+        <p class="event__duration">${getDurationMarkup(time)}</p>
       </div>
 
       <p class="event__price">

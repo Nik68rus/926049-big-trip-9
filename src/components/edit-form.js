@@ -51,7 +51,7 @@ const getPhotosMarkup = (urls) => urls.map((url) => `
   <img class="event__photo" src="${url}" alt="Event photo">
 `).join(`\n`);
 
-export const getEditFormMarkup = ({type, city, description, images, timeStart, duration, price, isFavorite, offers}) => {
+export const getEditFormMarkup = ({type, city, description, images, time, price, isFavorite, offers}) => {
   return `
   <li class="trip-events__item">
     <form class="event  event--edit" action="#" method="post">
@@ -94,7 +94,7 @@ export const getEditFormMarkup = ({type, city, description, images, timeStart, d
             class="event__input  event__input--time"
             id="event-start-time-1"
             type="text" name="event-start-time"
-            value="${formatDate(timeStart)} ${formatTime(timeStart)}"
+            value="${formatDate(time.start)} ${formatTime(time.start)}"
           >
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">
@@ -105,7 +105,7 @@ export const getEditFormMarkup = ({type, city, description, images, timeStart, d
             id="event-end-time-1"
             type="text"
             name="event-end-time"
-            value="${formatDate(timeStart + duration)} ${formatTime(timeStart + duration)}"
+            value="${formatDate(time.end)} ${formatTime(time.end)}"
           >
         </div>
 
