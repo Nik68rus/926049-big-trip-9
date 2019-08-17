@@ -1,5 +1,6 @@
 export const CITIES = [`Asterdam`, `Brusseles`, `Barcelona`, `Cologne`];
-export const TYPES = [`bus`, `check-in`, `drive`, `flight`, `restaurant`, `ship`, `sightseeing`, `taxi`, `train`, `transport`, `trip`];
+export const PLACE_TYPES = [`Check-in`, `Restaurant`, `Sightseeing`];
+export const ACTION_TYPES = [`Bus`, `Drive`, `Flight`, `Ship`, `Taxi`, `Train`, `Transport`, `Trip`];
 export const DESCRIPTION = [`Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
   `Cras aliquet varius magna, non porta ligula feugiat eget.`,
   `Fusce tristique felis at fermentum pharetra.`,
@@ -12,21 +13,26 @@ export const DESCRIPTION = [`Lorem ipsum dolor sit amet, consectetur adipiscing 
   `Nunc fermentum tortor ac porta dapibus.`,
   `In rutrum ac purus sit amet tempus.`];
 export const OPTIONS = [{
-  title: `lagguage`,
+  name: `lagguage`,
+  title: `Add lagguage`,
   price: 10,
-  connector: `Add `,
+  isAdded: Boolean(Math.round(Math.random())),
 }, {
-  title: `comfort class`,
+  name: `comfort`,
+  title: `Switch to comfort class`,
   price: 150,
-  connector: `Switch to `,
+  isAdded: Boolean(Math.round(Math.random())),
 }, {
-  title: `meal`,
+  name: `meal`,
+  title: `Add meal`,
   price: 2,
-  connector: `Add `,
+  isAdded: Boolean(Math.round(Math.random())),
 }, {
-  title: `seats`,
+  name: `seats`,
+  title: `Choose seats`,
   price: 9,
-  connector: `Choose `,
+  isAdded: Boolean(Math.round(Math.random())),
 }];
 export const MAX_PRICE = 300;
-export const EVENT_COUNT = 5;
+export const EVENT_COUNT = 4;
+export const IMAGE_MAX_AMOUNT = 7;

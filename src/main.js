@@ -7,6 +7,7 @@ import {
   getDayMarkup,
   renderComponent,
   eventList,
+  countPrice,
   getEventMarkup,
 } from './components';
 
@@ -36,5 +37,9 @@ renderComponent(tripEvents, getSortingMarkup(), `beforeend`);
 renderComponent(tripEvents, getDayMarkup(), `beforeend`);
 
 const tripEventsList = document.querySelector(`.trip-events__list`);
-renderEvents(tripEventsList, eventList);
-//renderComponent(tripEventsList, getEditFormMarkup(), `afterbegin`);
+renderComponent(tripEventsList, getEditFormMarkup(eventList[0]), `afterbegin`);
+
+renderEvents(tripEventsList, eventList.slice(1, eventList.length));
+
+const price = document.querySelector(`.trip-info__cost-value`);
+price.textContent = countPrice(eventList);

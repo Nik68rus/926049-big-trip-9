@@ -4,9 +4,9 @@ import {getSortingMarkup} from './sorting';
 import {getRouteMarkup} from './route';
 import {getEditFormMarkup} from './edit-form';
 import {getDayMarkup} from './day';
-import {renderComponent, getMarkup, formatDate, formatTime, formatDuration} from './util';
-import {TYPES, CITIES, DESCRIPTION, OPTIONS, MAX_PRICE, EVENT_COUNT} from '../constants';
-import {eventList} from '../data';
+import {renderComponent, getMarkup, formatDate, formatDateMarkup, formatTime, formatDuration} from './util';
+import {PLACE_TYPES, ACTION_TYPES, CITIES, DESCRIPTION, OPTIONS, MAX_PRICE, EVENT_COUNT, IMAGE_MAX_AMOUNT} from '../constants';
+import {eventList, countPrice} from '../data';
 import {getEventMarkup} from './event';
 
 export {
@@ -19,14 +19,18 @@ export {
   renderComponent,
   getMarkup,
   formatDate,
+  formatDateMarkup,
   formatTime,
   formatDuration,
-  TYPES,
+  PLACE_TYPES,
+  ACTION_TYPES,
   CITIES,
   DESCRIPTION,
   OPTIONS,
   MAX_PRICE,
   EVENT_COUNT,
+  IMAGE_MAX_AMOUNT,
   eventList,
+  countPrice,
   getEventMarkup,
 };
