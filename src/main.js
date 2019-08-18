@@ -34,7 +34,7 @@ const compareEvents = (a, b) => a.time.start - b.time.start;
 
 eventList.sort(compareEvents);
 
-renderComponent(tripInfo, getRouteMarkup(), `afterbegin`);
+renderComponent(tripInfo, getRouteMarkup(eventList), `afterbegin`);
 renderComponent(tripControls, getMenuWrappedMarkup(menuElements), `afterbegin`);
 renderComponent(tripControls, getFilterFormMarkup(filterElements), `beforeend`);
 renderComponent(tripEvents, getSortingMarkup(), `beforeend`);

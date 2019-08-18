@@ -1,7 +1,7 @@
 import {getMenuWrappedMarkup} from './site-menu';
 import {getFilterFormMarkup} from './filter';
 import {getSortingMarkup} from './sorting';
-import {getRouteMarkup} from './route';
+import {getRouteMarkup, getCitySet} from './route';
 import {getEditFormMarkup} from './edit-form';
 import {getDayMarkup} from './day';
 import {renderComponent, getMarkup, formatDate, formatDateMarkup, formatTime} from './util';
@@ -14,6 +14,7 @@ export {
   getFilterFormMarkup,
   getSortingMarkup,
   getRouteMarkup,
+  getCitySet,
   getEditFormMarkup,
   getDayMarkup,
   renderComponent,
