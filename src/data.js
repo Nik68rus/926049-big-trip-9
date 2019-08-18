@@ -9,7 +9,7 @@ export const getEvent = () => {
       DESCRIPTION[Math.floor(Math.random() * DESCRIPTION.length)],
       DESCRIPTION[Math.floor(Math.random() * DESCRIPTION.length)],
       DESCRIPTION[Math.floor(Math.random() * DESCRIPTION.length)],
-    ])].slice(0, 1 + Math.floor(Math.random() * 3)).join(` `),
+    ])].slice(0, Math.floor(Math.random() * 3)).join(` `),
     images: new Array(Math.floor(Math.random() * IMAGE_MAX_AMOUNT)).fill(``).map(() => `http://picsum.photos/300/150?r=${Math.random()}`),
     time: {
       start: time,

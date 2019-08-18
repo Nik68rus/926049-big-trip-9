@@ -11,7 +11,7 @@ const getOfferItemMarkup = ({title, price}) => {
   `;
 };
 
-const getOfferMarkup = (offers) => offers.map((offer) => getOfferItemMarkup(offer)).join(`\n`);
+const getOfferMarkup = (offers) => offers.filter((offer) => offer.isAdded === true).map((offer) => getOfferItemMarkup(offer)).join(`\n`);
 
 const addZero = (number) => number < 10 ? `0` + number : number;
 

@@ -47,9 +47,23 @@ const getOffersContainerMarkup = (offers) => offers.length > 0 ? `
   </section>
 ` : ``;
 
+const getDestinationMarkup = (text) => text === `` ? `` :
+  `
+    <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+    <p class="event__destination-description">${text}</p>
+`;
+
 const getPhotosMarkup = (urls) => urls.map((url) => `
   <img class="event__photo" src="${url}" alt="Event photo">
 `).join(`\n`);
+
+const getPhotoContainerMarkup = (urls) => urls.length > 0 ? `
+  <div class="event__photos-container">
+    <div class="event__photos-tape">
+      ${getPhotosMarkup(urls)}
+    </div>
+  </div>
+` : ``;
 
 export const getEditFormMarkup = ({type, city, description, images, time, price, isFavorite, offers}) => {
   return `
@@ -144,14 +158,8 @@ export const getEditFormMarkup = ({type, city, description, images, time, price,
         ${getOffersContainerMarkup(offers)}
 
         <section class="event__section  event__section--destination">
-          <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">${description}</p>
-
-          <div class="event__photos-container">
-            <div class="event__photos-tape">
-              ${getPhotosMarkup(images)}
-            </div>
-          </div>
+          ${getDestinationMarkup(description)}
+          ${getPhotoContainerMarkup(images)}
         </section>
       </section>
     </form>
