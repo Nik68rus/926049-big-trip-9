@@ -1,6 +1,3 @@
-export const getMarkup = (dataList, generator) => dataList.map(generator).join(`\n`);
-export const renderComponent = (container, component, position) => container.insertAdjacentHTML(position, component);
-
 const dateFormat = new Intl.DateTimeFormat(`en-GB`, {
   year: `numeric`,
   month: `numeric`,
@@ -17,7 +14,6 @@ const dateFormatDay = new Intl.DateTimeFormat(`en-US`, {
   month: `short`,
   day: `numeric`,
 });
-
 
 const timeFormat = new Intl.DateTimeFormat(`en-GB`, {
   hour12: false,

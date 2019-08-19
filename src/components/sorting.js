@@ -1,5 +1,8 @@
-export const getSortingMarkup = () => {
-  return `
+const compareEventsByTime = (a, b) => a.time.start - b.time.start;
+
+export const getSorteByTimeEvents = (events) => events.sort(compareEventsByTime);
+
+export const getSortingMarkup = () => `
   <form class="trip-events__trip-sort  trip-sort" action="#" method="get">
     <span class="trip-sort__item  trip-sort__item--day">Day</span>
 
@@ -30,5 +33,4 @@ export const getSortingMarkup = () => {
 
     <span class="trip-sort__item  trip-sort__item--offers">Offers</span>
   </form>
-  `;
-};
+`;

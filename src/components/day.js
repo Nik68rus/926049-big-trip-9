@@ -1,4 +1,4 @@
-import {formatDateDay, formatDateMarkup} from './util';
+import {formatDateDay, formatDateMarkup} from './date-formater';
 
 export const getDayMarkup = (date) => {
   return `

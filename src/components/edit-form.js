@@ -1,27 +1,30 @@
 import {PLACE_TYPES, ACTION_TYPES, CITIES} from '../constants';
-import {formatDate, formatTime} from './util';
+import {formatDate, formatTime} from './date-formater';
+import {makeMarkupGenerator} from '../util/dom';
 
-const getTypeChooserMarkup = (types, currentType) => types.map((type) => `
-  <div class="event__type-item">
-    <input
-      id="event-type-${type.toLowerCase()}-1"
-      class="event__type-input  visually-hidden"
-      type="radio"
-      name="event-type"
-      value="${type.toLowerCase()}"
-      ${type === currentType ? `checked` : ``}
-    >
-    <label
-      class="event__type-label  event__type-label--${type.toLowerCase()}"
-      for="event-type-${type.toLowerCase()}-1">${type}</label>
-  </div>
+const getTypeChooserMarkup = (types, currentType) =>
+  types.map((type) => `
+    <div class="event__type-item">
+      <input
+        id="event-type-${type.toLowerCase()}-1"
+        class="event__type-input  visually-hidden"
+        type="radio"
+        name="event-type"
+        value="${type.toLowerCase()}"
+        ${type === currentType ? `checked` : ``}
+      >
+      <label
+        class="event__type-label  event__type-label--${type.toLowerCase()}"
+        for="event-type-${type.toLowerCase()}-1">${type}</label>
+    </div>
   `).join(`\n`);
 
-const getDestinationListMarkup = (list) => list.map((item) => `
-  <option value="${item}"></option>
-`).join(`\n`);
+const getDestinationItemMarkup = (city) =>
+  `<option value="${city}"></option>`;
 
-const getEventOffersMarkup = (offers) => offers.map(({title, name, price, isAdded}) => `
+const getDestinationListMarkup = makeMarkupGenerator(getDestinationItemMarkup, `\n`);
+
+const getEventOfferMarkup = ({title, name, price, isAdded}) => `
   <div class="event__offer-selector">
     <input
       class="event__offer-checkbox  visually-hidden"
@@ -36,26 +39,30 @@ const getEventOffersMarkup = (offers) => offers.map(({title, name, price, isAdde
       &euro;&nbsp;<span class="event__offer-price">${price}</span>
     </label>
   </div>
-`).join(`\n`);
+`;
 
-const getOffersContainerMarkup = (offers) => offers.length > 0 ? `
-  <section class="event__section  event__section--offers">
-    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-    <div class="event__available-offers">
-      ${getEventOffersMarkup(offers)}
-    </div>
-  </section>
-` : ``;
+const getEventOffersMarkup = makeMarkupGenerator(getEventOfferMarkup, `\n`);
 
-const getDestinationMarkup = (text) => text === `` ? `` :
-  `
+const getOffersContainerMarkup = (offers) =>
+  offers.length > 0 ? `
+    <section class="event__section  event__section--offers">
+      <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+      <div class="event__available-offers">
+        ${getEventOffersMarkup(offers)}
+      </div>
+    </section>
+  ` : ``;
+
+const getDestinationMarkup = (text) =>
+  text === `` ? `` : `
     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
     <p class="event__destination-description">${text}</p>
 `;
 
-const getPhotosMarkup = (urls) => urls.map((url) => `
-  <img class="event__photo" src="${url}" alt="Event photo">
-`).join(`\n`);
+const getPhotoMarkup = (url) =>
+  `<img class="event__photo" src="${url}" alt="Event photo">`;
+
+const getPhotosMarkup = makeMarkupGenerator(getPhotoMarkup, `\n`);
 
 const getPhotoContainerMarkup = (urls) => urls.length > 0 ? `
   <div class="event__photos-container">
@@ -65,8 +72,7 @@ const getPhotoContainerMarkup = (urls) => urls.length > 0 ? `
   </div>
 ` : ``;
 
-export const getEditFormMarkup = ({type, city, description, images, time, price, isFavorite, offers}) => {
-  return `
+export const getEditFormMarkup = ({type, city, description, images, time, price, isFavorite, offers}) => `
   <li class="trip-events__item">
     <form class="event  event--edit" action="#" method="post">
       <header class="event__header">
@@ -164,5 +170,4 @@ export const getEditFormMarkup = ({type, city, description, images, time, price,
       </section>
     </form>
   </li>
-  `;
-};
+`;
