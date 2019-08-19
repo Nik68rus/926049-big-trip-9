@@ -1,5 +1,6 @@
 import {formatDateMarkup, formatTime} from './date-formater';
-import {PLACE_TYPES, Time} from '../constants';
+import {Time} from '../constants';
+import {PLACE_TYPES} from '../mock';
 import {makeMarkupGenerator} from '../util/dom';
 
 const getOfferItemMarkup = ({title, price}) => `

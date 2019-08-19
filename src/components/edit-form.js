@@ -1,4 +1,4 @@
-import {PLACE_TYPES, ACTION_TYPES, CITIES} from '../constants';
+import {PLACE_TYPES, ACTION_TYPES, CITIES} from '../mock';
 import {formatDate, formatTime} from './date-formater';
 import {makeMarkupGenerator} from '../util/dom';
 

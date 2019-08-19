@@ -1,20 +1,80 @@
-import {
-  PLACE_TYPES,
-  ACTION_TYPES,
-  CITIES,
-  SENTENCES,
-  OPTIONS,
-  MAX_OPTIONS_NUM,
-  MIN_PRICE,
-  MAX_PRICE,
-  EVENT_NUM,
-  IMAGE_MAX_NUM,
-  MAX_SENTENCES_NUM,
-  MAX_DURATION,
-  Time,
-} from './constants';
+import {Time} from './constants';
 
-import {getRandomBool} from './util/tools';
+const getRandomBool = (chance = 0.5) =>
+  Math.random() > chance;
+
+export const CITIES = [
+  `Asterdam`,
+  `Brusseles`,
+  `Barcelona`,
+  `Cologne`,
+];
+
+export const PLACE_TYPES = [
+  `Check-in`,
+  `Restaurant`,
+  `Sightseeing`,
+];
+
+export const ACTION_TYPES = [
+  `Bus`,
+  `Drive`,
+  `Flight`,
+  `Ship`,
+  `Taxi`,
+  `Train`,
+  `Transport`,
+]
+;
+const SENTENCES = [
+  `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+  `Cras aliquet varius magna, non porta ligula feugiat eget.`,
+  `Fusce tristique felis at fermentum pharetra.`,
+  `Aliquam id orci ut lectus varius viverra.`,
+  `Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.`,
+  `Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.`,
+  `Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.`,
+  `Sed sed nisi sed augue convallis suscipit in sed felis.`,
+  `Aliquam erat volutpat.`,
+  `Nunc fermentum tortor ac porta dapibus.`,
+  `In rutrum ac purus sit amet tempus.`
+];
+
+const OPTIONS = [
+  {
+    name: `lagguage`,
+    title: `Add lagguage`,
+    price: 10,
+    isAdded: getRandomBool(),
+  },
+  {
+    name: `comfort`,
+    title: `Switch to comfort class`,
+    price: 150,
+    isAdded: getRandomBool(),
+  },
+  {
+    name: `meal`,
+    title: `Add meal`,
+    price: 2,
+    isAdded: getRandomBool(),
+  },
+  {
+    name: `seats`,
+    title: `Choose seats`,
+    price: 9,
+    isAdded: getRandomBool(),
+  }
+];
+
+const MAX_DURATION = Time.DAY * 2;
+const MIN_PRICE = 5;
+const MAX_PRICE = 300;
+const EVENT_NUM = 4;
+const IMAGE_MAX_NUM = 7;
+const MAX_SENTENCES_NUM = 3;
+const MAX_OPTIONS_NUM = 2;
+
 
 const getRandomItem = (array) =>
   array[Math.floor(Math.random() * array.length)];
