@@ -1,4 +1,4 @@
-import {getMarkup} from './util';
+import {makeMarkupGenerator} from '../util/dom';
 
 const getMenuItemMarkup = ({name, isActive = false} = {}) => {
   return `
@@ -6,13 +6,11 @@ const getMenuItemMarkup = ({name, isActive = false} = {}) => {
   `;
 };
 
-const getMenuMarkup = (data) => getMarkup(data, getMenuItemMarkup);
+const getMenuMarkup = makeMarkupGenerator(getMenuItemMarkup, `\n`);
 
-export const getMenuWrappedMarkup = (elements) => {
-  return `
-    <nav class="trip-controls__trip-tabs  trip-tabs">
-      ${getMenuMarkup(elements)}
-    </nav>
-  `.trim();
-};
+export const getMenuWrappedMarkup = (elements) => `
+  <nav class="trip-controls__trip-tabs  trip-tabs">
+    ${getMenuMarkup(elements)}
+  </nav>
+`.trim();
 

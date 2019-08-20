@@ -1,6 +1,6 @@
-import {getMarkup} from './util';
+import {makeMarkupGenerator} from '../util/dom';
 
-const getFilterItemMarkup = ({name, isChecked = false} = {}) => {
+const getFilterItemMarkup = ({name, isChecked = false}) => {
   const id = name.toLowerCase();
   return `
   <div class="trip-filters__filter">
@@ -16,12 +16,11 @@ const getFilterItemMarkup = ({name, isChecked = false} = {}) => {
   `.trim();
 };
 
-const getFiltersMarkup = (data) => getMarkup(data, getFilterItemMarkup);
+const getFiltersMarkup = makeMarkupGenerator(getFilterItemMarkup, `\n`);
 
-export const getFilterFormMarkup = (elements) => {
-  return `
-    <form class="trip-filters" action="#" method="get">
-      ${getFiltersMarkup(elements)}
-      <button class="visually-hidden" type="submit">Accept filter</button>
-    </form>`.trim();
-};
+export const getFilterFormMarkup = (elements) => `
+  <form class="trip-filters" action="#" method="get">
+    ${getFiltersMarkup(elements)}
+    <button class="visually-hidden" type="submit">Accept filter</button>
+  </form>
+`.trim();
