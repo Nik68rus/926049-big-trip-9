@@ -1,16 +1,26 @@
-import {makeMarkupGenerator} from '../util/dom';
+import {createElement} from '../util/dom';
 
-const getMenuItemMarkup = ({name, isActive = false} = {}) => {
-  return `
-  <a class="trip-tabs__btn  ${isActive ? `trip-tabs__btn--active` : ``}" href="#">${name}</a>
-  `;
-};
+export class SiteMenu {
+  constructor({name, isActive}) {
+    this._name = name;
+    this._isAcive = isActive;
+    this._element = null;
+  }
 
-const getMenuMarkup = makeMarkupGenerator(getMenuItemMarkup, `\n`);
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
 
-export const getMenuWrappedMarkup = (elements) => `
-  <nav class="trip-controls__trip-tabs  trip-tabs">
-    ${getMenuMarkup(elements)}
-  </nav>
-`.trim();
+  removeElement() {
+    this._element = null;
+  }
 
+  getTemplate() {
+    return `
+    <a class="trip-tabs__btn  ${this._isActive ? `trip-tabs__btn--active` : ``}" href="#">${this._name}</a>
+    `.trim();
+  }
+}
