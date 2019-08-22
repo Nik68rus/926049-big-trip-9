@@ -1,31 +1,15 @@
-import {Time} from './constants';
+import {Time, PLACE_TYPES, ACTION_TYPES} from './constants';
 
 const getRandomBool = (chance = 0.5) =>
   Math.random() > chance;
 
 export const CITIES = [
-  `Asterdam`,
+  `Amsterdam`,
   `Brusseles`,
   `Barcelona`,
   `Cologne`,
 ];
 
-export const PLACE_TYPES = [
-  `Check-in`,
-  `Restaurant`,
-  `Sightseeing`,
-];
-
-export const ACTION_TYPES = [
-  `Bus`,
-  `Drive`,
-  `Flight`,
-  `Ship`,
-  `Taxi`,
-  `Train`,
-  `Transport`,
-]
-;
 const SENTENCES = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
   `Cras aliquet varius magna, non porta ligula feugiat eget.`,

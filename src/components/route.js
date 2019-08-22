@@ -2,8 +2,8 @@ import {formatDateDay} from './date-formater';
 
 const getStartEndDivider = (events) => {
   const cities = events.map((event) => event.city);
-  const citySet = new Set(cities);
-  return citySet.size > 2 || (citySet.size === 2 && cities[0] === cities[cities.length - 1]) ? `... &mdash; ` : ``;
+  const uniqueCities = new Set(cities);
+  return uniqueCities.size > 2 || (uniqueCities.size === 2 && cities[0] === cities[cities.length - 1]) ? `... &mdash; ` : ``;
 };
 
 const getRoute = (events) => `${events[0].city} &mdash; ${getStartEndDivider(events)} ${events[events.length - 1].city}`;

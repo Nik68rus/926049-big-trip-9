@@ -4,16 +4,16 @@ import {
   getSortingMarkup,
   getSorteByTimeEvents,
   getRouteMarkup,
-  getEditFormMarkup,
-  getDayMarkup,
-  getEventsMarkup,
   getCost,
+  Event,
+  EventEdit,
+  Day,
 } from './components';
 
-import {renderComponent} from './util/dom';
+import {renderComponent, render, Position} from './util/dom';
 import {Mock} from './mock';
 
-const eventList = getSorteByTimeEvents(Mock.load());
+const events = getSorteByTimeEvents(Mock.load());
 
 const menuElements = [
   {name: `Table`, isActive: true},
@@ -26,21 +26,52 @@ const filterElements = [
   {name: `Past`},
 ];
 
+const renderEvent = (eventMock) => {
+  const event = new Event(eventMock);
+  const eventEdit = new EventEdit(eventMock);
+  const onEscKeyDown = (evt) => {
+    if (evt.key === `Escape` || evt.key === `Esc`) {
+      tripEventsList.replaceChild(event.getElement(), eventEdit.getElement());
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
+  };
+
+  event.getElement()
+    .querySelector(`.event__rollup-btn`)
+    .addEventListener(`click`, () => {
+      tripEventsList.replaceChild(eventEdit.getElement(), event.getElement());
+      document.addEventListener(`keydown`, onEscKeyDown);
+    });
+
+  eventEdit.getElement()
+    .querySelector(`.event`)
+    .addEventListener(`submit`, () => {
+      tripEventsList.replaceChild(event.getElement(), eventEdit.getElement());
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    });
+
+  render(tripEventsList, event.getElement(), Position.BEFOREEND);
+};
+
+const renderDay = (date) => {
+  const day = new Day(date);
+  render(tripEvents, day.getElement(), Position.BEFOREEND);
+};
+
 const tripControls = document.querySelector(`.trip-main__trip-controls`);
 const tripInfo = document.querySelector(`.trip-main__trip-info`);
 const tripEvents = document.querySelector(`.trip-events`);
 
-renderComponent(tripInfo, getRouteMarkup(eventList), `afterbegin`);
+renderComponent(tripInfo, getRouteMarkup(events), `afterbegin`);
 renderComponent(tripControls, getMenuWrappedMarkup(menuElements), `afterbegin`);
 renderComponent(tripControls, getFilterFormMarkup(filterElements), `beforeend`);
 renderComponent(tripEvents, getSortingMarkup(), `beforeend`);
-renderComponent(tripEvents, getDayMarkup(eventList[0].time.start), `beforeend`);
+renderDay(events[0].time.start);
 
 const tripEventsList = document.querySelector(`.trip-events__list`);
 
-renderComponent(tripEventsList, getEditFormMarkup(eventList[0]), `afterbegin`);
-renderComponent(tripEventsList, getEventsMarkup(eventList.slice(1, eventList.length), `beforeend`));
+events.forEach(renderEvent);
 
 const price = document.querySelector(`.trip-info__cost-value`);
-price.textContent = getCost(eventList);
+price.textContent = getCost(events);
 
