@@ -8,7 +8,7 @@ import {
   Sorting,
 } from './components';
 
-import {render, Position} from './util/dom';
+import {render, createElement, Position} from './util/dom';
 import {isEscapeKey} from './util/predicates';
 import {Mock} from './mock';
 
@@ -80,7 +80,7 @@ const renderFilterWrapper = () => {
 };
 
 const renderFilter = (filterType) => {
-  const tripFilters = document.querySelector(`.trip-filters`);
+  const tripFilters = tripControls.querySelector(`.trip-filters`);
   const filter = new Filter(filterType);
   render(tripFilters, filter.getElement(), Position.BEFOREEND);
 };
@@ -94,7 +94,7 @@ const renderMenuWrapper = () => {
 };
 
 const renderMenu = (menuItem) => {
-  const menuContainer = document.querySelector(`.trip-controls__trip-tabs`);
+  const menuContainer = tripControls.querySelector(`.trip-controls__trip-tabs`);
   const menu = new SiteMenu(menuItem);
   render(menuContainer, menu.getElement(), Position.BEFOREEND);
 };
@@ -113,16 +113,22 @@ const getCost = (points) => {
   return cost;
 };
 
+const showIvitation = () => `
+  <p class="trip-events__msg">Click New Event to create your first point</p>
+`.trim();
+
 const events = getSorteByTimeEvents(Mock.load());
 
-renderRoute(events);
 renderMenuWrapper();
 menuElements.forEach(renderMenu);
 renderFilterWrapper();
 filterElements.forEach(renderFilter);
-renderSorting();
-renderDay(events[0].time.start);
-events.forEach(renderEvent);
-
-price.textContent = getCost(events);
-
+if (events.length === 0) {
+  render(tripEvents, createElement(showIvitation()), Position.BEFOREEND);
+} else {
+  renderSorting();
+  renderRoute(events);
+  renderDay(events[0].time.start);
+  events.forEach(renderEvent);
+  price.textContent = getCost(events);
+}

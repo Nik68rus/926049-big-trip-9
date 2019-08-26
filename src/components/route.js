@@ -32,7 +32,10 @@ export default class Route {
 const getStartEndDivider = (events) => {
   const cities = events.map((event) => event.city);
   const uniqueCities = new Set(cities);
-  return uniqueCities.size > 2 || (uniqueCities.size === 2 && cities[0] === cities[cities.length - 1]) ? `... &mdash; ` : ``;
+  return uniqueCities.size > 2 ||
+    (uniqueCities.size === 2 && cities[0] === cities[cities.length - 1]) ||
+    (uniqueCities.size === 2 && cities[0] !== cities[cities.length - 1] && cities.slice(1, cities.length - 2).some((city) => city !== cities[0])) ?
+    `... &mdash; ` : ``;
 };
 
 const getRoute = (events) => `${events[0].city} &mdash; ${getStartEndDivider(events)} ${events[events.length - 1].city}`;
