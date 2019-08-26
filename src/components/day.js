@@ -1,14 +1,14 @@
 import {formatDateDay, formatDateMarkup} from './date-formater';
 import {createElement} from '../util/dom';
 
-export class Day {
+export default class Day {
   constructor(date) {
     this._date = date;
     this._element = null;
   }
 
   getElement() {
-    if (!this._element) {
+    if (this._element === null) {
       this._element = createElement(this.getTemplate());
     }
     return this._element;

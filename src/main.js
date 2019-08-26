@@ -9,12 +9,13 @@ import {
 } from './components';
 
 import {render, Position} from './util/dom';
+import {isEscapeKey} from './util/predicates';
 import {Mock} from './mock';
 
-const compareEventsByTime = (a, b) => a.time.start - b.time.start;
-const getSorteByTimeEvents = (events) => events.sort(compareEventsByTime);
-
-const events = getSorteByTimeEvents(Mock.load());
+const tripControls = document.querySelector(`.trip-main__trip-controls`);
+const tripInfo = document.querySelector(`.trip-main__trip-info`);
+const tripEvents = document.querySelector(`.trip-events`);
+const price = document.querySelector(`.trip-info__cost-value`);
 
 const menuElements = [
   {name: `Table`, isActive: true},
@@ -27,11 +28,16 @@ const filterElements = [
   {name: `Past`},
 ];
 
+const compareEventsByTime = (a, b) => a.time.start - b.time.start;
+
+const getSorteByTimeEvents = (events) => events.sort(compareEventsByTime);
+
 const renderEvent = (eventMock) => {
+  const tripEventsList = document.querySelector(`.trip-events__list`);
   const event = new Event(eventMock);
   const eventEdit = new EventEdit(eventMock);
   const onEscKeyDown = (evt) => {
-    if (evt.key === `Escape` || evt.key === `Esc`) {
+    if (isEscapeKey(evt)) {
       tripEventsList.replaceChild(event.getElement(), eventEdit.getElement());
       document.removeEventListener(`keydown`, onEscKeyDown);
     }
@@ -74,6 +80,7 @@ const renderFilterWrapper = () => {
 };
 
 const renderFilter = (filterType) => {
+  const tripFilters = document.querySelector(`.trip-filters`);
   const filter = new Filter(filterType);
   render(tripFilters, filter.getElement(), Position.BEFOREEND);
 };
@@ -87,6 +94,7 @@ const renderMenuWrapper = () => {
 };
 
 const renderMenu = (menuItem) => {
+  const menuContainer = document.querySelector(`.trip-controls__trip-tabs`);
   const menu = new SiteMenu(menuItem);
   render(menuContainer, menu.getElement(), Position.BEFOREEND);
 };
@@ -96,29 +104,6 @@ const renderSorting = () => {
   render(tripEvents, sorting.getElement(), Position.BEFOREEND);
 };
 
-const tripControls = document.querySelector(`.trip-main__trip-controls`);
-const tripInfo = document.querySelector(`.trip-main__trip-info`);
-const tripEvents = document.querySelector(`.trip-events`);
-
-renderRoute(events);
-
-renderMenuWrapper();
-const menuContainer = document.querySelector(`.trip-controls__trip-tabs`);
-menuElements.forEach(renderMenu);
-
-renderFilterWrapper();
-const tripFilters = document.querySelector(`.trip-filters`);
-filterElements.forEach(renderFilter);
-
-renderSorting();
-renderDay(events[0].time.start);
-
-const tripEventsList = document.querySelector(`.trip-events__list`);
-
-events.forEach(renderEvent);
-
-const price = document.querySelector(`.trip-info__cost-value`);
-
 const getCost = (points) => {
   let cost = 0;
   points.forEach((it) => {
@@ -127,6 +112,17 @@ const getCost = (points) => {
   });
   return cost;
 };
+
+const events = getSorteByTimeEvents(Mock.load());
+
+renderRoute(events);
+renderMenuWrapper();
+menuElements.forEach(renderMenu);
+renderFilterWrapper();
+filterElements.forEach(renderFilter);
+renderSorting();
+renderDay(events[0].time.start);
+events.forEach(renderEvent);
 
 price.textContent = getCost(events);
 

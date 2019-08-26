@@ -3,7 +3,7 @@ import {CITIES} from '../mock';
 import {formatDate, formatTime} from './date-formater';
 import {makeMarkupGenerator, createElement} from '../util/dom';
 
-export class EventEdit {
+export default class EventEdit {
   constructor({type, city, description, images, time, price, offers, isFavorite}) {
     this._type = type;
     this._city = city;
@@ -17,7 +17,7 @@ export class EventEdit {
   }
 
   getElement() {
-    if (!this._element) {
+    if (this._element === null) {
       this._element = createElement(this.getTemplate());
     }
     return this._element;

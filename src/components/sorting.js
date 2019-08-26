@@ -1,12 +1,12 @@
 import {createElement} from '../util/dom';
 
-export class Sorting {
+export default class Sorting {
   constructor() {
     this._element = null;
   }
 
   getElement() {
-    if (!this._element) {
+    if (this._element === null) {
       this._element = createElement(this.getTemplate());
     }
     return this._element;

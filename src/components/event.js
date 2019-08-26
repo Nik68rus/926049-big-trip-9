@@ -2,7 +2,7 @@ import {formatDateMarkup, formatTime} from './date-formater';
 import {Time, PLACE_TYPES} from '../constants';
 import {makeMarkupGenerator, createElement} from '../util/dom';
 
-export class Event {
+export default class Event {
   constructor({type, city, description, images, time, price, offers, isFavorite}) {
     this._type = type;
     this._city = city;
@@ -16,7 +16,7 @@ export class Event {
   }
 
   getElement() {
-    if (!this._element) {
+    if (this._element === null) {
       this._element = createElement(this.getTemplate());
     }
     return this._element;
@@ -110,14 +110,3 @@ const getEventOffersPrice = (offers) =>
   offers
     .map((offer) => offer.isAdded ? offer.price : 0)
     .reduce(priceReducer, 0);
-
-const getEventPrice = (event) =>
-  event.price + getEventOffersPrice(event.offers);
-
-export const getCost = (events) => {
-  let cost = 0;
-  events.forEach((event) => {
-    cost = cost + getEventPrice(event);
-  });
-  return cost;
-};

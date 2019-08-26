@@ -1,6 +1,6 @@
 import {createElement} from '../util/dom';
 
-export class SiteMenu {
+export default class SiteMenu {
   constructor({name, isActive}) {
     this._name = name;
     this._isAcive = isActive;
@@ -8,7 +8,7 @@ export class SiteMenu {
   }
 
   getElement() {
-    if (!this._element) {
+    if (this._element === null) {
       this._element = createElement(this.getTemplate());
     }
     return this._element;

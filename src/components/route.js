@@ -1,14 +1,14 @@
 import {formatDateDay} from './date-formater';
 import {createElement} from '../util/dom';
 
-export class Route {
+export default class Route {
   constructor(events) {
     this._events = events;
     this._element = null;
   }
 
   getElement() {
-    if (!this._element) {
+    if (this._element === null) {
       this._element = createElement(this.getTemplate());
     }
     return this._element;
@@ -40,12 +40,3 @@ const getRoute = (events) => `${events[0].city} &mdash; ${getStartEndDivider(eve
 const getTripDates = (events) => `
 ${formatDateDay(events[0].time.start)}&nbsp;&mdash;&nbsp;${formatDateDay(events[events.length - 1].time.end)}
 `;
-
-export const getRouteMarkup = (events) => `
-  <div class="trip-info__main">
-    <h1 class="trip-info__title">${getRoute(events)}</h1>
-
-    <p class="trip-info__dates">${getTripDates(events)}</p>
-  </div>
-`;
-
