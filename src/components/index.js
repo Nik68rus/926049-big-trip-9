@@ -1,19 +1,17 @@
-import {getMenuWrappedMarkup} from './site-menu';
-import {getFilterFormMarkup} from './filter';
-import {getSortingMarkup, getSorteByTimeEvents} from './sorting';
-import {getRouteMarkup} from './route';
-import {getEditFormMarkup} from './edit-form';
-import {getDayMarkup} from './day';
-import {getEventsMarkup, getCost} from './event';
+import SiteMenu from './site-menu';
+import Filter from './filter';
+import Sorting from './sorting';
+import Route from './route';
+import EventEdit from './event-edit';
+import Day from './day';
+import Event from './event';
 
 export {
-  getMenuWrappedMarkup,
-  getFilterFormMarkup,
-  getSortingMarkup,
-  getSorteByTimeEvents,
-  getRouteMarkup,
-  getEditFormMarkup,
-  getDayMarkup,
-  getEventsMarkup,
-  getCost,
+  SiteMenu,
+  Filter,
+  Sorting,
+  Route,
+  Day,
+  Event,
+  EventEdit,
 };
