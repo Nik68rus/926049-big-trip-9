@@ -1,21 +1,14 @@
 import {
   SiteMenu,
-  Event,
-  EventEdit,
-  Day,
-  Route,
   Filter,
-  Sorting,
 } from './components';
 
-import {render, createElement, Position} from './util/dom';
-import {isEscapeKey} from './util/predicates';
+import TripController from './controllers/trip';
+import {render, Position} from './util/dom';
 import {Mock} from './mock';
 
 const tripControls = document.querySelector(`.trip-main__trip-controls`);
-const tripInfo = document.querySelector(`.trip-main__trip-info`);
 const tripEvents = document.querySelector(`.trip-events`);
-const price = document.querySelector(`.trip-info__cost-value`);
 
 const menuElements = [
   {name: `Table`, isActive: true},
@@ -31,44 +24,6 @@ const filterElements = [
 const compareEventsByTime = (a, b) => a.time.start - b.time.start;
 
 const getSorteByTimeEvents = (events) => events.sort(compareEventsByTime);
-
-const renderEvent = (eventMock) => {
-  const tripEventsList = document.querySelector(`.trip-events__list`);
-  const event = new Event(eventMock);
-  const eventEdit = new EventEdit(eventMock);
-  const onEscKeyDown = (evt) => {
-    if (isEscapeKey(evt)) {
-      tripEventsList.replaceChild(event.getElement(), eventEdit.getElement());
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    }
-  };
-
-  event.getElement()
-    .querySelector(`.event__rollup-btn`)
-    .addEventListener(`click`, () => {
-      tripEventsList.replaceChild(eventEdit.getElement(), event.getElement());
-      document.addEventListener(`keydown`, onEscKeyDown);
-    });
-
-  eventEdit.getElement()
-    .querySelector(`.event`)
-    .addEventListener(`submit`, () => {
-      tripEventsList.replaceChild(event.getElement(), eventEdit.getElement());
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    });
-
-  render(tripEventsList, event.getElement(), Position.BEFOREEND);
-};
-
-const renderDay = (date) => {
-  const day = new Day(date);
-  render(tripEvents, day.getElement(), Position.BEFOREEND);
-};
-
-const renderRoute = (points) => {
-  const route = new Route(points);
-  render(tripInfo, route.getElement(), Position.AFTERBEGIN);
-};
 
 const renderFilterWrapper = () => {
   const filterWrapper = `
@@ -99,36 +54,12 @@ const renderMenu = (menuItem) => {
   render(menuContainer, menu.getElement(), Position.BEFOREEND);
 };
 
-const renderSorting = () => {
-  const sorting = new Sorting();
-  render(tripEvents, sorting.getElement(), Position.BEFOREEND);
-};
-
-const getCost = (points) => {
-  let cost = 0;
-  points.forEach((it) => {
-    const event = new Event(it);
-    cost = cost + event.getPrice();
-  });
-  return cost;
-};
-
-const showIvitation = () => `
-  <p class="trip-events__msg">Click New Event to create your first point</p>
-`.trim();
-
 const events = getSorteByTimeEvents(Mock.load());
 
 renderMenuWrapper();
 menuElements.forEach(renderMenu);
 renderFilterWrapper();
 filterElements.forEach(renderFilter);
-if (events.length === 0) {
-  render(tripEvents, createElement(showIvitation()), Position.BEFOREEND);
-} else {
-  renderSorting();
-  renderRoute(events);
-  renderDay(events[0].time.start);
-  events.forEach(renderEvent);
-  price.textContent = getCost(events);
-}
+
+const tripController = new TripController(tripEvents, events);
+tripController.init();

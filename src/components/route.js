@@ -1,21 +1,10 @@
 import {formatDateDay} from './date-formater';
-import {createElement} from '../util/dom';
+import AbstractComponent from './abstarct-component';
 
-export default class Route {
+export default class Route extends AbstractComponent {
   constructor(events) {
+    super();
     this._events = events;
-    this._element = null;
-  }
-
-  getElement() {
-    if (this._element === null) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 
   getTemplate() {
