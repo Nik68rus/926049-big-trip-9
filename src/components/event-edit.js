@@ -1,10 +1,12 @@
 import {PLACE_TYPES, ACTION_TYPES} from '../constants';
 import {CITIES} from '../mock';
 import {formatDate, formatTime} from './date-formater';
-import {makeMarkupGenerator, createElement} from '../util/dom';
+import {makeMarkupGenerator} from '../util/dom';
+import AbstractComponent from './abstarct-component';
 
-export default class EventEdit {
+export default class EventEdit extends AbstractComponent {
   constructor({type, city, description, images, time, price, offers, isFavorite}) {
+    super();
     this._type = type;
     this._city = city;
     this._description = description;
@@ -13,18 +15,6 @@ export default class EventEdit {
     this._price = price;
     this._offers = offers;
     this._isFavorite = isFavorite;
-    this._element = null;
-  }
-
-  getElement() {
-    if (this._element === null) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 
   getTemplate() {
