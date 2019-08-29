@@ -3,7 +3,9 @@ import {isEscapeKey} from '../util/predicates';
 
 import {
   TripDays,
-  DaySchedule,
+  Day,
+  DayDate,
+  DayEvents,
   TripEmpty,
   Sorting,
   Route,
@@ -18,8 +20,11 @@ export default class TripController {
   constructor(container, events) {
     this._container = container;
     this._events = events;
+    this._sortedEvents = events;
     this._tripDays = new TripDays();
-    this._daySchedule = new DaySchedule(events);
+    this._day = new Day();
+    this._dayDate = new DayDate({day: 1, date: this._events[0].time.start}); // временное решение
+    this._dayEvents = new DayEvents();
     this._tripEmpty = new TripEmpty();
     this._sorting = new Sorting();
     this._route = new Route(events);
@@ -27,14 +32,20 @@ export default class TripController {
 
   init() {
     const tripDays = this._tripDays.getElement();
-    render(this._container, tripDays, Position.BEFOREEND);
+    const day = this._day.getElement();
 
     if (this._events.length === 0) {
       render(this._container, this._tripEmpty.getElement(), Position.BEFOREEND);
     } else {
       render(this._container, this._sorting.getElement(), Position.BEFOREEND);
+      this._sorting.getElement().addEventListener(`click`, (evt) => this._onSortClick(evt));
+
       render(tripInfo, this._route.getElement(), Position.AFTERBEGIN);
-      render(this._container, this._daySchedule.getElement(), Position.BEFOREEND);
+      render(this._container, tripDays, Position.BEFOREEND);
+      render(tripDays, day, Position.BEFOREEND);
+      render(day, this._dayDate.getElement(), Position.AFTERBEGIN);
+      render(day, this._dayEvents.getElement(), Position.BEFOREEND);
+
       this._events.forEach((event) => this._renderEvent(event));
       price.textContent = this._getCost();
     }
@@ -43,7 +54,7 @@ export default class TripController {
   _renderEvent(eventData) {
     const event = new Event(eventData);
     const eventEdit = new EventEdit(eventData);
-    const tripEventsList = this._daySchedule.getElement().querySelector(`.trip-events__list`);
+    const tripEventsList = this._dayEvents.getElement();
 
     const onEscKeyDown = (evt) => {
       if (isEscapeKey(evt)) {
@@ -77,4 +88,28 @@ export default class TripController {
     });
     return cost;
   }
+
+  _onSortClick(evt) {
+    evt.preventDefault();
+
+    if (evt.target.tagName.toLowerCase() !== `label`) {
+      return;
+    }
+
+    this._dayEvents.getElement().innerHTML = ``;
+
+    switch (evt.target.dataset.sortType) {
+      case `time`:
+        this._sortedEvents = this._events.slice().sort((a, b) => (a.time.end - a.time.start) - (b.time.end - b.time.start));
+        break;
+      case `price`:
+        this._sortedEvents = this._events.slice().sort((a, b) => b.getPrice() - a.getPrice()); // не пойму почему тут ошибка :(((
+        break;
+      case `default`:
+        this._sortedEvents = this._events;
+        break;
+    }
+    this._sortedEvents.forEach((event) => this._renderEvent(event));
+  }
+
 }

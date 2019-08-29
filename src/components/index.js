@@ -6,8 +6,10 @@ import Route from './route';
 import EventEdit from './event-edit';
 import Event from './event';
 import TripDays from './trip-days';
-import DaySchedule from './day-schedule';
 import TripEmpty from './trip-empty';
+import Day from './day';
+import DayDate from './day-date';
+import DayEvents from './day-events';
 
 export {
   AbstractComponent,
@@ -18,6 +20,8 @@ export {
   Event,
   EventEdit,
   TripDays,
-  DaySchedule,
   TripEmpty,
+  Day,
+  DayDate,
+  DayEvents,
 };
