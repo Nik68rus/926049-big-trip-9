@@ -90,6 +90,7 @@ export default class TripController {
   }
 
   _onSortClick(evt) {
+    const sorting = this._sorting.getElement();
     evt.preventDefault();
 
     if (evt.target.tagName.toLowerCase() !== `label`) {
@@ -100,16 +101,18 @@ export default class TripController {
 
     switch (evt.target.dataset.sortType) {
       case `time`:
-        this._sortedEvents = this._events.slice().sort((a, b) => (a.time.end - a.time.start) - (b.time.end - b.time.start));
+        sorting.querySelector(`#sort-time`).checked = true;
+        this._sortedEvents = this._events.slice().sort((a, b) => (b.time.end - b.time.start) - (a.time.end - a.time.start));
         break;
       case `price`:
-        this._sortedEvents = this._events.slice().sort((a, b) => b.getPrice() - a.getPrice()); // не пойму почему тут ошибка :(((
+        sorting.querySelector(`#sort-price`).checked = true;
+        this._sortedEvents = this._events.slice().sort((a, b) => b.price - a.price);
         break;
       case `default`:
+        sorting.querySelector(`#sort-event`).checked = true;
         this._sortedEvents = this._events;
         break;
     }
     this._sortedEvents.forEach((event) => this._renderEvent(event));
   }
-
 }
