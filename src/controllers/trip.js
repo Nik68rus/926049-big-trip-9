@@ -23,7 +23,8 @@ export default class TripController {
     this._sortedEvents = events;
     this._tripDays = new TripDays();
     this._day = new Day();
-    this._dayDate = new DayDate({day: 1, date: this._events[0].time.start}); // временное решение
+    this._dayDate = this._events.length > 0 ?
+      new DayDate({day: 1, date: this._events[0].time.start}) : new DayDate({day: 0, date: 0}); // временное решение
     this._dayEvents = new DayEvents();
     this._tripEmpty = new TripEmpty();
     this._sorting = new Sorting();
