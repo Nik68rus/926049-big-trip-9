@@ -29,25 +29,25 @@ const OPTIONS = [
     name: `lagguage`,
     title: `Add lagguage`,
     price: 10,
-    isAdded: getRandomBool(),
+    isAdded: false,
   },
   {
     name: `comfort`,
     title: `Switch to comfort class`,
     price: 150,
-    isAdded: getRandomBool(),
+    isAdded: false,
   },
   {
     name: `meal`,
     title: `Add meal`,
     price: 2,
-    isAdded: getRandomBool(),
+    isAdded: false,
   },
   {
     name: `seats`,
     title: `Choose seats`,
     price: 9,
-    isAdded: getRandomBool(),
+    isAdded: false,
   }
 ];
 
@@ -78,25 +78,49 @@ const getImageURL = () =>
 const getImageURLs = (num = IMAGE_MAX_NUM) =>
   Array.from({length: num}, getImageURL);
 
+export const CitiesWithDescription = CITIES.map((city) => {
+  return {
+    name: city,
+    description: getRandomSet(SENTENCES, getRandomNumber(0, MAX_SENTENCES_NUM)).join(` `),
+  };
+});
+
+export const TypeOffers = PLACE_TYPES.concat(ACTION_TYPES).map((type) => {
+  return {
+    name: type,
+    offers: getRandomSet(OPTIONS, getRandomNumber(0, MAX_OPTIONS_NUM)),
+  };
+});
+
+
 const getEvent = () => {
   const time = Date.now() - Math.random() * Time.DAY * 7;
+  const city = getRandomItem(CitiesWithDescription);
+  const type = getRandomItem(TypeOffers);
   return {
-    type: getRandomItem(PLACE_TYPES.concat(ACTION_TYPES)),
-    city: getRandomItem(CITIES),
-    description: getRandomSet(SENTENCES, getRandomNumber(0, MAX_SENTENCES_NUM)).join(` `),
+    type: type.name,
+    city: city.name,
+    description: city.description,
     images: getImageURLs(getRandomNumber(0, IMAGE_MAX_NUM)),
     time: {
       start: time,
       end: time + Math.random() * MAX_DURATION,
     },
     price: getRandomNumber(MIN_PRICE, MAX_PRICE),
-    offers: getRandomSet(OPTIONS, getRandomNumber(0, MAX_OPTIONS_NUM)),
+    offers: type.offers,
     isFavorite: getRandomBool(),
   };
 };
 
-const getEvents = (num = EVENT_NUM) =>
-  Array.from({length: num}, getEvent);
+const getEvents = (num = EVENT_NUM) => {
+  const events = Array.from({length: num}, getEvent);
+  events.forEach((event) => {
+    event.offers.forEach((offer) => {
+      offer.isAdded = getRandomBool(); // почему-то работает некорректно, все равно у одинаковых типов добавлены одни и те же опции
+    });
+  });
+  return events;
+};
 
 export const Mock = {
   load: getEvents,

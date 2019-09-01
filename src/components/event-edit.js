@@ -1,7 +1,8 @@
 import {PLACE_TYPES, ACTION_TYPES} from '../constants';
-import {CITIES} from '../mock';
+import {CITIES, CitiesWithDescription, TypeOffers} from '../mock';
 import {formatDate, formatTime} from './date-formater';
 import {makeMarkupGenerator} from '../util/dom';
+import {makeFirstCharCapital} from '../util/tools';
 import AbstractComponent from './abstarct-component';
 
 export default class EventEdit extends AbstractComponent {
@@ -15,6 +16,57 @@ export default class EventEdit extends AbstractComponent {
     this._price = price;
     this._offers = offers;
     this._isFavorite = isFavorite;
+
+    this._typeInit();
+    this._cityInit();
+  }
+
+  _typeInit() {
+    const typeButtons = this.getElement().querySelectorAll(`.event__type-input`);
+    const offerSection = this.getElement().querySelector(`.event__section--offers`);
+    const currentOffers = this.getElement().querySelector(`.event__available-offers`);
+
+    const initOffers = (offers) => {
+      if (offers.length === 0) {
+        offerSection.classList.add(`visually-hidden`);
+      } else {
+        offerSection.classList.remove(`visually-hidden`);
+      }
+    };
+
+    const onTypeClick = (evt) => {
+      const target = evt.target;
+      const curentType = TypeOffers.find(({name}) => name === target.value);
+
+      initOffers(curentType.offers);
+      this.getElement().querySelector(`.event__type-icon`).src = `img/icons/${curentType.name}.png`;
+      this.getElement().querySelector(`.event__type-output`).textContent = `${makeFirstCharCapital(curentType.name)} ${PLACE_TYPES.indexOf(curentType.name) < 0 ? `to` : `in`}`;
+      this.getElement().querySelector(`.event__type-toggle`).checked = false;
+
+      currentOffers.innerHTML = ``;
+      currentOffers.insertAdjacentHTML(`beforeEnd`, getEventOffersMarkup(curentType.offers));
+    };
+
+    initOffers(this._offers);
+
+    typeButtons.forEach((type) => {
+      type.addEventListener(`click`, onTypeClick);
+    });
+  }
+
+  _cityInit() {
+    const city = this.getElement().querySelector(`.event__input--destination`);
+    const destinationHeader = this.getElement().querySelector(`.event__section-title--destination`);
+    const description = this.getElement().querySelector(`.event__destination-description`);
+
+    const onCityChange = () => {
+      const cityInfo = CitiesWithDescription.find(({name}) => name === city.value);
+      description.textContent = cityInfo.description;
+      destinationHeader.style.display = description.textContent === `` ? `none` : `block`;
+    };
+
+    destinationHeader.style.display = description.textContent === `` ? `none` : `block`;
+    city.addEventListener(`change`, onCityChange);
   }
 
   getTemplate() {
@@ -44,7 +96,7 @@ export default class EventEdit extends AbstractComponent {
 
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-1">
-            ${this._type} ${PLACE_TYPES.indexOf(this._type) < 0 ? `to` : `in`}
+            ${makeFirstCharCapital(this._type)} ${PLACE_TYPES.indexOf(this._type) < 0 ? `to` : `in`}
             </label>
             <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${this._city}" list="destination-list-1">
             <datalist id="destination-list-1">
@@ -133,7 +185,7 @@ const getTypeChooserMarkup = (types, currentType) =>
       >
       <label
         class="event__type-label  event__type-label--${type.toLowerCase()}"
-        for="event-type-${type.toLowerCase()}-1">${type}</label>
+        for="event-type-${type.toLowerCase()}-1">${makeFirstCharCapital(type)}</label>
     </div>
   `).join(`\n`);
 
@@ -161,18 +213,16 @@ const getEventOfferMarkup = ({title, name, price, isAdded}) => `
 
 const getEventOffersMarkup = makeMarkupGenerator(getEventOfferMarkup, `\n`);
 
-const getOffersContainerMarkup = (offers) =>
-  offers.length > 0 ? `
+const getOffersContainerMarkup = (offers) => `
     <section class="event__section  event__section--offers">
       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
       <div class="event__available-offers">
         ${getEventOffersMarkup(offers)}
       </div>
     </section>
-  ` : ``;
+  `;
 
-const getDestinationMarkup = (text) =>
-  text === `` ? `` : `
+const getDestinationMarkup = (text) =>`
     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
     <p class="event__destination-description">${text}</p>
 `;

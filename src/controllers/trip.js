@@ -1,6 +1,7 @@
 import {render, Position} from '../util/dom';
-import {isEscapeKey} from '../util/predicates';
 import {formatDate, getDateDifference} from '../components/date-formater';
+import PointController from './point';
+
 
 import {
   TripDays,
@@ -10,7 +11,6 @@ import {
   TripEmpty,
   Sorting,
   Route,
-  EventEdit,
   Event,
 } from '../components';
 
@@ -26,6 +26,10 @@ export default class TripController {
     this._tripEmpty = new TripEmpty();
     this._sorting = new Sorting();
     this._route = new Route(events);
+
+    this._subscriptions = [];
+    this._onChangeView = this._onChangeView.bind(this);
+    this._onDataChange = this._onDataChange.bind(this);
   }
 
   init() {
@@ -38,10 +42,10 @@ export default class TripController {
 
     render(tripInfo, this._route.getElement(), Position.AFTERBEGIN);
     this._renderEventsByDefault();
-    price.textContent = this._getCost();
   }
 
   _renderEventsByDefault() {
+    this._tripDays.getElement().innerHTML = ``;
     const dayHeader = this._sorting.getElement().querySelector(`.trip-sort__item--day`);
     const tripDays = this._tripDays.getElement();
     const tripStart = formatDate(this._events[0].time.start);
@@ -65,9 +69,11 @@ export default class TripController {
       render(curentDay.getElement(), dayEvents.getElement(), Position.BEFOREEND);
       this._events.filter((event) => formatDate(event.time.start) === it.date).forEach((event) => this._renderEvent(dayEvents.getElement(), event));
     });
+    price.textContent = this._getCost();
   }
 
   _renderSortedEvents() {
+    this._tripDays.getElement().innerHTML = ``;
     const dayHeader = this._sorting.getElement().querySelector(`.trip-sort__item--day`);
     const tripDays = this._tripDays.getElement();
     const day = new Day();
@@ -78,35 +84,28 @@ export default class TripController {
     render(day.getElement(), dayDate.getElement(), Position.AFTERBEGIN);
     render(day.getElement(), dayEvents.getElement(), Position.BEFOREEND);
     this._sortedEvents.forEach((event) => this._renderEvent(dayEvents.getElement(), event));
+    price.textContent = this._getCost();
   }
 
-  _renderEvent(container, eventData) {
-    const event = new Event(eventData);
-    const eventEdit = new EventEdit(eventData);
-    const tripEventsList = container;
+  _renderEvent(container, event) {
+    const pointController = new PointController(container, event, this._onDataChange, this._onChangeView);
+    this._subscriptions.push(pointController.setDefaultView.bind(pointController));
+  }
 
-    const onEscKeyDown = (evt) => {
-      if (isEscapeKey(evt)) {
-        tripEventsList.replaceChild(event.getElement(), eventEdit.getElement());
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      }
-    };
+  _onDataChange(newData, oldData) {
+    const defaultSorting = this._sorting.getElement().querySelector(`#sort-event`);
+    this._events[this._events.findIndex((it) => it === oldData)] = newData;
+    this._sortedEvents[this._sortedEvents.findIndex((it) => it === oldData)] = newData;
 
-    event.getElement()
-      .querySelector(`.event__rollup-btn`)
-      .addEventListener(`click`, () => {
-        tripEventsList.replaceChild(eventEdit.getElement(), event.getElement());
-        document.addEventListener(`keydown`, onEscKeyDown);
-      });
+    if (defaultSorting.checked) {
+      this._renderEventsByDefault();
+    } else {
+      this._renderSortedEvents();
+    }
+  }
 
-    eventEdit.getElement()
-      .querySelector(`.event`)
-      .addEventListener(`submit`, () => {
-        tripEventsList.replaceChild(event.getElement(), eventEdit.getElement());
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      });
-
-    render(tripEventsList, event.getElement(), Position.BEFOREEND);
+  _onChangeView() {
+    this._subscriptions.forEach((it) => it());
   }
 
   _getCost() {
