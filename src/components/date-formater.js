@@ -1,4 +1,6 @@
-const dateFormat = new Intl.DateTimeFormat(`en-GB`, {
+import {Time} from '../constants';
+
+const dateFormat = new Intl.DateTimeFormat(`en-US`, {
   year: `numeric`,
   month: `numeric`,
   day: `numeric`,
@@ -20,6 +22,12 @@ const timeFormat = new Intl.DateTimeFormat(`en-GB`, {
   hour: `numeric`,
   minute: `numeric`,
 });
+
+export const getDateDifference = (a, b) => {
+  const date1 = new Date(a);
+  const date2 = new Date(b);
+  return Math.ceil(Math.abs(date2.getTime() - date1.getTime()) / Time.DAY);
+};
 
 export const formatDate = (date) => dateFormat.format(date);
 export const formatDateMarkup = (date) => dateFormatMarkup.format(date);

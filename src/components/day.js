@@ -8,3 +8,4 @@ export default class Day extends AbstractComponent {
   `.trim();
   }
 }
+

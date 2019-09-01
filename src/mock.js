@@ -54,7 +54,7 @@ const OPTIONS = [
 const MAX_DURATION = Time.DAY * 2;
 const MIN_PRICE = 5;
 const MAX_PRICE = 300;
-const EVENT_NUM = 4;
+const EVENT_NUM = 10;
 const IMAGE_MAX_NUM = 7;
 const MAX_SENTENCES_NUM = 3;
 const MAX_OPTIONS_NUM = 2;
@@ -79,7 +79,7 @@ const getImageURLs = (num = IMAGE_MAX_NUM) =>
   Array.from({length: num}, getImageURL);
 
 const getEvent = () => {
-  const time = Date.now() - Math.random() * Time.DAY;
+  const time = Date.now() - Math.random() * Time.DAY * 7;
   return {
     type: getRandomItem(PLACE_TYPES.concat(ACTION_TYPES)),
     city: getRandomItem(CITIES),

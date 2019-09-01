@@ -9,11 +9,12 @@ export default class DayDate extends AbstractComponent {
   }
 
   getTemplate() {
-    return `
-    <div class="day__info">
-      <span class="day__counter">${this._day}</span>
-      <time class="day__date" datetime="${formatDateMarkup(this._date)}">${formatDateDay(this._date)}</time>
-    </div>
-  `.trim();
+    return this._day === 0 ?
+      `<div class="day__info"></div>` :
+      `<div class="day__info">
+        <span class="day__counter">${this._day}</span>
+        <time class="day__date" datetime="${formatDateMarkup(new Date(this._date))}">${formatDateDay(new Date(this._date))}</time>
+      </div>
+    `.trim();
   }
 }
