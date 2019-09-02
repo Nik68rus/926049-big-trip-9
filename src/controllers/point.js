@@ -1,6 +1,10 @@
 import {Event, EventEdit} from '../components';
 import {isEscapeKey} from '../util/predicates';
 import {render, Position} from '../util/dom';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
+import 'flatpickr/dist/themes/light.css';
+
 
 export default class PointController {
   constructor(container, eventInfo, onDataChange, onChangeView) {
@@ -21,6 +25,20 @@ export default class PointController {
         document.removeEventListener(`keydown`, onEscKeyDown);
       }
     };
+
+    flatpickr(this._eventEdit.getElement().querySelector(`#event-start-time-1`), {
+      altInput: true,
+      allowInput: true,
+      enableTime: true,
+      defaultDate: this._data.time.start,
+    });
+
+    flatpickr(this._eventEdit.getElement().querySelector(`#event-end-time-1`), {
+      altInput: true,
+      allowInput: true,
+      enableTime: true,
+      defaultDate: this._data.time.end,
+    });
 
     this._eventView.getElement()
       .querySelector(`.event__rollup-btn`)
