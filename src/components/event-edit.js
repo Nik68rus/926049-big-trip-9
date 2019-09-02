@@ -62,10 +62,10 @@ export default class EventEdit extends AbstractComponent {
     const onCityChange = () => {
       const cityInfo = CitiesWithDescription.find(({name}) => name === city.value);
       description.textContent = cityInfo.description;
-      destinationHeader.style.display = description.textContent === `` ? `none` : `block`;
+      destinationHeader.style.display = description.textContent > 0 ? `block` : `none`;
     };
 
-    destinationHeader.style.display = description.textContent === `` ? `none` : `block`;
+    destinationHeader.style.display = description.textContent > 0 ? `block` : `none`;
     city.addEventListener(`change`, onCityChange);
   }
 

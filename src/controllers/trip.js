@@ -67,7 +67,7 @@ export default class TripController {
       render(tripDays, curentDay.getElement(), Position.BEFOREEND);
       render(curentDay.getElement(), dayDate.getElement(), Position.AFTERBEGIN);
       render(curentDay.getElement(), dayEvents.getElement(), Position.BEFOREEND);
-      this._events.filter((event) => formatDate(event.time.start) === it.date).forEach((event) => this._renderEvent(dayEvents.getElement(), event));
+      this._events.filter((curentEvent) => formatDate(curentEvent.time.start) === it.date).forEach((curentEvent) => this._renderEvent(dayEvents.getElement(), curentEvent));
     });
     price.textContent = this._getCost();
   }
@@ -83,12 +83,12 @@ export default class TripController {
     render(tripDays, day.getElement(), Position.BEFOREEND);
     render(day.getElement(), dayDate.getElement(), Position.AFTERBEGIN);
     render(day.getElement(), dayEvents.getElement(), Position.BEFOREEND);
-    this._sortedEvents.forEach((event) => this._renderEvent(dayEvents.getElement(), event));
+    this._sortedEvents.forEach((curentEvent) => this._renderEvent(dayEvents.getElement(), curentEvent));
     price.textContent = this._getCost();
   }
 
-  _renderEvent(container, event) {
-    const pointController = new PointController(container, event, this._onDataChange, this._onChangeView);
+  _renderEvent(container, curentEvent) {
+    const pointController = new PointController(container, curentEvent, this._onDataChange, this._onChangeView);
     this._subscriptions.push(pointController.setDefaultView.bind(pointController));
   }
 

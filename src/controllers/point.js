@@ -3,13 +3,13 @@ import {isEscapeKey} from '../util/predicates';
 import {render, Position} from '../util/dom';
 
 export default class PointController {
-  constructor(container, data, onDataChange, onChangeView) {
+  constructor(container, eventInfo, onDataChange, onChangeView) {
     this._container = container;
-    this._data = data;
+    this._data = eventInfo;
     this._onDataChange = onDataChange;
     this._onChangeView = onChangeView;
-    this._eventView = new Event(data);
-    this._eventEdit = new EventEdit(data);
+    this._eventView = new Event(eventInfo);
+    this._eventEdit = new EventEdit(eventInfo);
 
     this.init();
   }

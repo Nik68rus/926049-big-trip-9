@@ -96,7 +96,7 @@ export const TypeOffers = PLACE_TYPES.concat(ACTION_TYPES).map((type) => {
 const getEvent = () => {
   const time = Date.now() - Math.random() * Time.DAY * 7;
   const city = getRandomItem(CitiesWithDescription);
-  const type = getRandomItem(TypeOffers);
+  const type = JSON.parse(JSON.stringify(getRandomItem(TypeOffers)));
   return {
     type: type.name,
     city: city.name,
@@ -114,9 +114,9 @@ const getEvent = () => {
 
 const getEvents = (num = EVENT_NUM) => {
   const events = Array.from({length: num}, getEvent);
-  events.forEach((event) => {
-    event.offers.forEach((offer) => {
-      offer.isAdded = getRandomBool(); // почему-то работает некорректно, все равно у одинаковых типов добавлены одни и те же опции
+  events.forEach(({offers}) => {
+    offers.forEach((offer) => {
+      offer.isAdded = getRandomBool();
     });
   });
   return events;
