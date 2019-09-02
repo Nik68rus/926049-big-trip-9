@@ -2,6 +2,7 @@ import {formatDateMarkup, formatTime} from './date-formater';
 import {Time, PLACE_TYPES} from '../constants';
 import {makeMarkupGenerator} from '../util/dom';
 import AbstractComponent from './abstarct-component';
+import {makeFirstCharCapital} from '../util/tools';
 
 export default class Event extends AbstractComponent {
   constructor({type, city, description, images, time, price, offers, isFavorite}) {
@@ -23,7 +24,7 @@ export default class Event extends AbstractComponent {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${this._type.toLowerCase()}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${this._type} ${PLACE_TYPES.indexOf(this._type) < 0 ? `to` : `in`} ${this._city}</h3>
+        <h3 class="event__title">${makeFirstCharCapital(this._type)} ${PLACE_TYPES.indexOf(this._type) < 0 ? `to` : `in`} ${this._city}</h3>
 
         <div class="event__schedule">
           <p class="event__time">
@@ -52,7 +53,7 @@ export default class Event extends AbstractComponent {
   }
 
   getPrice() {
-    return this._price + getEventOffersPrice(this._offers);
+    return +this._price + getEventOffersPrice(this._offers);
   }
 }
 
@@ -98,5 +99,5 @@ const priceReducer = (acc, it) =>
 
 const getEventOffersPrice = (offers) =>
   offers
-    .map((offer) => offer.isAdded ? offer.price : 0)
+    .map((offer) => offer.isAdded ? +offer.price : 0)
     .reduce(priceReducer, 0);

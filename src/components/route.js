@@ -19,7 +19,7 @@ export default class Route extends AbstractComponent {
 }
 
 const getStartEndDivider = (events) => {
-  const cities = events.map((event) => event.city);
+  const cities = events.map((curentEvent) => curentEvent.city);
   const uniqueCities = new Set(cities);
   return uniqueCities.size > 2 ||
     (uniqueCities.size === 2 && cities[0] === cities[cities.length - 1]) ||

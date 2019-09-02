@@ -5,18 +5,18 @@ export const Time = {
 };
 
 export const PLACE_TYPES = [
-  `Check-in`,
-  `Restaurant`,
-  `Sightseeing`,
+  `check-in`,
+  `restaurant`,
+  `sightseeing`,
 ];
 
 export const ACTION_TYPES = [
-  `Bus`,
-  `Drive`,
-  `Flight`,
-  `Ship`,
-  `Taxi`,
-  `Train`,
-  `Transport`,
+  `bus`,
+  `drive`,
+  `flight`,
+  `ship`,
+  `taxi`,
+  `train`,
+  `transport`,
 ];
 
