@@ -21,10 +21,6 @@ const filterElements = [
   {name: `Past`},
 ];
 
-const compareEventsByTime = (a, b) => a.time.start - b.time.start;
-
-const getSorteByTimeEvents = (events) => events.sort(compareEventsByTime);
-
 const renderFilterWrapper = () => {
   const filterWrapper = `
   <form class="trip-filters" action="#" method="get">
@@ -54,7 +50,7 @@ const renderMenu = (menuItem) => {
   render(menuContainer, menu.getElement(), Position.BEFOREEND);
 };
 
-const events = getSorteByTimeEvents(Mock.load());
+const events = Mock.load();
 
 renderMenuWrapper();
 menuElements.forEach(renderMenu);

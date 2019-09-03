@@ -1,4 +1,5 @@
 import {render, Position} from '../util/dom';
+import {compareEventsByTime} from '../util/tools';
 import {formatDate, getDateDifference} from '../components/date-formater';
 import PointController from './point';
 
@@ -37,6 +38,9 @@ export default class TripController {
       render(this._container, this._tripEmpty.getElement(), Position.BEFOREEND);
       return;
     }
+
+    this._events = this._getSorteByTimeEvents(this._events);
+
     render(this._container, this._sorting.getElement(), Position.BEFOREEND);
     this._sorting.getElement().addEventListener(`click`, (evt) => this._onSortClick(evt));
 
@@ -44,7 +48,12 @@ export default class TripController {
     this._renderEventsByDefault();
   }
 
+  _getSorteByTimeEvents(events) {
+    return events.sort(compareEventsByTime);
+  }
+
   _renderEventsByDefault() {
+    this._events = this._getSorteByTimeEvents(this._events);
     this._tripDays.getElement().innerHTML = ``;
     const dayHeader = this._sorting.getElement().querySelector(`.trip-sort__item--day`);
     const tripDays = this._tripDays.getElement();
