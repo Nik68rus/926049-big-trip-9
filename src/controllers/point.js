@@ -31,6 +31,7 @@ export default class PointController {
       allowInput: true,
       enableTime: true,
       defaultDate: this._data.time.start,
+      altFormat: `d/m/Y H:i`,
     });
 
     flatpickr(this._eventEdit.getElement().querySelector(`#event-end-time-1`), {
@@ -38,6 +39,7 @@ export default class PointController {
       allowInput: true,
       enableTime: true,
       defaultDate: this._data.time.end,
+      altFormat: `d/m/Y H:i`,
     });
 
     this._eventView.getElement()
