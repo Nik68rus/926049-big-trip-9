@@ -2,6 +2,7 @@ import {render, Position} from '../util/dom';
 import {compareEventsByTime} from '../util/tools';
 import {formatDate, getDateDifference} from '../components/date-formater';
 import PointController from './point';
+import {SortType} from '../constants';
 
 
 import {
@@ -22,7 +23,7 @@ export default class TripController {
   constructor(container, events) {
     this._container = container;
     this._events = events;
-    this._sortedEvents = events;
+    this._sortType = SortType.EVENT;
     this._tripDays = new TripDays();
     this._tripEmpty = new TripEmpty();
     this._sorting = new Sorting();
@@ -45,11 +46,19 @@ export default class TripController {
     this._sorting.getElement().addEventListener(`click`, (evt) => this._onSortClick(evt));
 
     render(tripInfo, this._route.getElement(), Position.AFTERBEGIN);
-    this._renderEventsByDefault();
+    this._renderEvents();
   }
 
   _getSorteByTimeEvents(events) {
     return events.sort(compareEventsByTime);
+  }
+
+  _renderEvents() {
+    if (this._sortType === SortType.EVENT) {
+      this._renderEventsByDefault();
+    } else {
+      this._renderSortedEvents();
+    }
   }
 
   _renderEventsByDefault() {
@@ -92,7 +101,7 @@ export default class TripController {
     render(tripDays, day.getElement(), Position.BEFOREEND);
     render(day.getElement(), dayDate.getElement(), Position.AFTERBEGIN);
     render(day.getElement(), dayEvents.getElement(), Position.BEFOREEND);
-    this._sortedEvents.forEach((curentEvent) => this._renderEvent(dayEvents.getElement(), curentEvent));
+    this._getSortedEvents().forEach((curentEvent) => this._renderEvent(dayEvents.getElement(), curentEvent));
     price.textContent = this._getCost();
   }
 
@@ -104,13 +113,9 @@ export default class TripController {
   _onDataChange(newData, oldData) {
     const defaultSorting = this._sorting.getElement().querySelector(`#sort-event`);
     this._events[this._events.findIndex((it) => it === oldData)] = newData;
-    this._sortedEvents[this._sortedEvents.findIndex((it) => it === oldData)] = newData;
+    this._getSortedEvents()[this._getSortedEvents().findIndex((it) => it === oldData)] = newData;
 
-    if (defaultSorting.checked) {
-      this._renderEventsByDefault();
-    } else {
-      this._renderSortedEvents();
-    }
+    this._renderEvents();
   }
 
   _onChangeView() {
@@ -127,31 +132,30 @@ export default class TripController {
   }
 
   _onSortClick(evt) {
-    const sorting = this._sorting.getElement();
     evt.preventDefault();
 
     if (evt.target.tagName.toLowerCase() !== `label`) {
       return;
     }
-
+    this._sorting.getElement().querySelector(`#sort-${evt.target.dataset.sortType}`).checked = true;
     this._tripDays.getElement().innerHTML = ``;
+    this._sortType = evt.target.dataset.sortType;
+    this._renderEvents();
+  }
 
-    switch (evt.target.dataset.sortType) {
-      case `time`:
-        sorting.querySelector(`#sort-time`).checked = true;
-        this._sortedEvents = this._events.slice().sort((a, b) => (b.time.end - b.time.start) - (a.time.end - a.time.start));
-        this._renderSortedEvents();
+  _getSortedEvents() {
+    let currentEvents = [];
+    switch (this._sortType) {
+      case SortType.TIME:
+        currentEvents = this._events.slice().sort((a, b) => (b.time.end - b.time.start) - (a.time.end - a.time.start));
         break;
-      case `price`:
-        sorting.querySelector(`#sort-price`).checked = true;
-        this._sortedEvents = this._events.slice().sort((a, b) => b.price - a.price);
-        this._renderSortedEvents();
+      case SortType.PRICE:
+        currentEvents = this._events.slice().sort((a, b) => b.price - a.price);
         break;
-      case `default`:
-        sorting.querySelector(`#sort-event`).checked = true;
-        this._sortedEvents = this._events;
-        this._renderEventsByDefault();
+      case SortType.EVENT:
+        currentEvents = this._events;
         break;
     }
+    return currentEvents;
   }
 }

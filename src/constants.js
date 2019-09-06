@@ -20,3 +20,15 @@ export const ACTION_TYPES = [
   `transport`,
 ];
 
+export const Mode = {
+  ADDING: `adding`,
+  DEFAULT: `default`,
+};
+
+export const SortType = {
+  PRICE: `price`,
+  TIME: `time`,
+  EVENT: `event`,
+};
+
+
