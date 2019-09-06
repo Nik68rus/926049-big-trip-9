@@ -49,6 +49,14 @@ export default class TripController {
     this._renderEvents();
   }
 
+  hide() {
+    this._tripDays.getElement().classList.add(`visually-hidden`);
+  }
+
+  show() {
+    this._tripDays.getElement().classList.remove(`visually-hidden`);
+  }
+
   _getSorteByTimeEvents(events) {
     return events.sort(compareEventsByTime);
   }
