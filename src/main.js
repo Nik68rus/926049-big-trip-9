@@ -83,6 +83,10 @@ const onMenuClick = (evt) => {
   }
 };
 
+const onAddEventBtnClick = () => {
+  tripController.createEvent();
+};
+
 const events = Mock.load();
 
 renderMenuWrapper();
@@ -96,3 +100,5 @@ filterElements.forEach(renderFilter);
 
 const tripController = new TripController(tripEvents, events);
 tripController.init();
+
+document.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, onAddEventBtnClick);

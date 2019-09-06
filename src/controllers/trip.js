@@ -2,7 +2,7 @@ import {render, Position} from '../util/dom';
 import {compareEventsByTime} from '../util/tools';
 import {formatDate, getDateDifference} from '../components/date-formater';
 import PointController from './point';
-import {SortType} from '../constants';
+import {SortType, Mode, ACTION_TYPES} from '../constants';
 
 
 import {
@@ -18,11 +18,13 @@ import {
 
 const tripInfo = document.querySelector(`.trip-main__trip-info`);
 const price = document.querySelector(`.trip-info__cost-value`);
+const tripEvents = document.querySelector(`.trip-events`);
 
 export default class TripController {
   constructor(container, events) {
     this._container = container;
     this._events = events;
+    this._creatingEvent = null;
     this._sortType = SortType.EVENT;
     this._tripDays = new TripDays();
     this._tripEmpty = new TripEmpty();
@@ -56,6 +58,28 @@ export default class TripController {
   show() {
     this._tripDays.getElement().classList.remove(`visually-hidden`);
   }
+
+  createEvent() {
+    const defaultEvent = {
+      type: ACTION_TYPES[0],
+      city: ``,
+      description: ``,
+      images: [],
+      time: {
+        start: new Date(),
+        end: new Date(),
+      },
+      price: 0,
+      offers: new Set(),
+      isFavorite: false,
+    };
+
+    if (this._creatingEvent) {
+      return;
+    }
+    this._creatingEvent = new PointController(tripEvents, defaultEvent, Mode.ADDING, this._onDataChange, this._onChangeView);
+  }
+
 
   _getSorteByTimeEvents(events) {
     return events.sort(compareEventsByTime);
@@ -114,14 +138,26 @@ export default class TripController {
   }
 
   _renderEvent(container, curentEvent) {
-    const pointController = new PointController(container, curentEvent, this._onDataChange, this._onChangeView);
+    const pointController = new PointController(container, curentEvent, Mode.DEFAULT, this._onDataChange, this._onChangeView);
     this._subscriptions.push(pointController.setDefaultView.bind(pointController));
   }
 
   _onDataChange(newData, oldData) {
-    const defaultSorting = this._sorting.getElement().querySelector(`#sort-event`);
-    this._events[this._events.findIndex((it) => it === oldData)] = newData;
-    this._getSortedEvents()[this._getSortedEvents().findIndex((it) => it === oldData)] = newData;
+    const index = this._events.findIndex((it) => it === oldData);
+
+    if (newData === null) {
+      this._events = [...this._events.slice(0, index), ...this._events.slice(index + 1)];
+      if (oldData === null) {
+        this._creatingEvent = null;
+      }
+    } else {
+      if (oldData === null) {
+        this._creatingTask = null;
+        this._events = [newData, ...this._events];
+      } else {
+        this._events[index] = newData;
+      }
+    }
 
     this._renderEvents();
   }
