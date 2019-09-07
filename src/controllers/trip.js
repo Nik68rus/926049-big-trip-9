@@ -105,7 +105,7 @@ export default class TripController {
     const dayHeader = this._sorting.getElement().querySelector(`.trip-sort__item--day`);
     const tripDays = this._tripDays.getElement();
     const tripStart = formatDate(this._events[0].time.start);
-    const eventDays = this._events.map((it) => formatDate(it.time.start));
+    const eventDays = this._getFilteredEvents(this._events).map((it) => formatDate(it.time.start));
     const uniqueDays = [...new Set(eventDays)];
     const uniqueDaysWithNumbers = uniqueDays.map((it) => {
       return {
@@ -123,7 +123,7 @@ export default class TripController {
       render(tripDays, curentDay.getElement(), Position.BEFOREEND);
       render(curentDay.getElement(), dayDate.getElement(), Position.AFTERBEGIN);
       render(curentDay.getElement(), dayEvents.getElement(), Position.BEFOREEND);
-      this._events.filter((curentEvent) => formatDate(curentEvent.time.start) === it.date).forEach((curentEvent) => this._renderEvent(dayEvents.getElement(), curentEvent));
+      this._getFilteredEvents(this._events).filter((curentEvent) => formatDate(curentEvent.time.start) === it.date).forEach((curentEvent) => this._renderEvent(dayEvents.getElement(), curentEvent));
     });
     price.textContent = this._getCost();
   }
@@ -139,7 +139,7 @@ export default class TripController {
     render(tripDays, day.getElement(), Position.BEFOREEND);
     render(day.getElement(), dayDate.getElement(), Position.AFTERBEGIN);
     render(day.getElement(), dayEvents.getElement(), Position.BEFOREEND);
-    this._getSortedEvents().forEach((curentEvent) => this._renderEvent(dayEvents.getElement(), curentEvent));
+    this._getFilteredEvents(this._getSortedEvents()).forEach((curentEvent) => this._renderEvent(dayEvents.getElement(), curentEvent));
     price.textContent = this._getCost();
   }
 
@@ -214,13 +214,13 @@ export default class TripController {
     this._renderEvents();
   }
 
-  _getFilteredEvents() {
+  _getFilteredEvents(sortedEvents) {
     switch (this._filterType) {
       case FilterType.FUTURE:
-        return this._events.slice().filter((point) => point.time.start > Date.now());
+        return sortedEvents.filter((point) => new Date(point.time.start) > new Date(Date.now()));
       case FilterType.PAST:
-        return this._events.slice().filter((point) => point.time.start < Date.now());
+        return sortedEvents.filter((point) => new Date(point.time.start) < new Date(Date.now()));
     }
-    return this._events;
+    return sortedEvents;
   }
 }

@@ -95,7 +95,7 @@ export const TypeOffers = ACTION_TYPES.concat(PLACE_TYPES).map((type) => {
 
 
 const getEvent = () => {
-  const time = Date.now() - Math.random() * Time.DAY * 7;
+  const time = Date.now() - Math.random() * Time.DAY * 7 + Math.random() * Time.DAY * 7;
   const city = getRandomItem(CitiesWithDescription);
   const type = JSON.parse(JSON.stringify(getRandomItem(TypeOffers)));
   return {
