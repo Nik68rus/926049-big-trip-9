@@ -2,7 +2,8 @@ import {render, Position} from '../util/dom';
 import {compareEventsByTime} from '../util/tools';
 import {formatDate, getDateDifference} from '../components/date-formater';
 import PointController from './point';
-import {SortType, Mode, ACTION_TYPES} from '../constants';
+import {SortType, Mode} from '../constants';
+import {TypeOffers} from '../mock';
 
 
 import {
@@ -18,7 +19,6 @@ import {
 
 const tripInfo = document.querySelector(`.trip-main__trip-info`);
 const price = document.querySelector(`.trip-info__cost-value`);
-const tripEvents = document.querySelector(`.trip-events`);
 
 export default class TripController {
   constructor(container, events) {
@@ -61,7 +61,7 @@ export default class TripController {
 
   createEvent() {
     const defaultEvent = {
-      type: ACTION_TYPES[0],
+      type: TypeOffers[0].name,
       city: ``,
       description: ``,
       images: [],
@@ -70,14 +70,15 @@ export default class TripController {
         end: new Date(),
       },
       price: 0,
-      offers: new Set(),
+      offers: TypeOffers[0].offers,
       isFavorite: false,
     };
 
-    if (this._creatingEvent) {
-      return;
-    }
-    this._creatingEvent = new PointController(tripEvents, defaultEvent, Mode.ADDING, this._onDataChange, this._onChangeView);
+    this._onChangeView();
+
+    this._creatingEvent = new PointController(this._tripDays.getElement(), defaultEvent, Mode.ADDING, this._onDataChange, this._onChangeView);
+    this._subscriptions.push(this._creatingEvent.setDefaultView.bind(this._creatingEvent));
+    document.querySelector(`.trip-main__event-add-btn`).disabled = true;
   }
 
 
@@ -146,13 +147,14 @@ export default class TripController {
     const index = this._events.findIndex((it) => it === oldData);
 
     if (newData === null) {
-      this._events = [...this._events.slice(0, index), ...this._events.slice(index + 1)];
       if (oldData === null) {
         this._creatingEvent = null;
+      } else {
+        this._events = [...this._events.slice(0, index), ...this._events.slice(index + 1)];
       }
     } else {
       if (oldData === null) {
-        this._creatingTask = null;
+        this._creatingEvent = null;
         this._events = [newData, ...this._events];
       } else {
         this._events[index] = newData;

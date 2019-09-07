@@ -54,7 +54,7 @@ const OPTIONS = [
 const MAX_DURATION = Time.DAY * 2;
 const MIN_PRICE = 5;
 const MAX_PRICE = 300;
-const EVENT_NUM = 10;
+const EVENT_NUM = 6;
 const IMAGE_MAX_NUM = 7;
 const MAX_SENTENCES_NUM = 3;
 const MAX_OPTIONS_NUM = 2;
@@ -82,10 +82,11 @@ export const CitiesWithDescription = CITIES.map((city) => {
   return {
     name: city,
     description: getRandomSet(SENTENCES, getRandomNumber(0, MAX_SENTENCES_NUM)).join(` `),
+    images: getImageURLs(getRandomNumber(0, IMAGE_MAX_NUM)),
   };
 });
 
-export const TypeOffers = PLACE_TYPES.concat(ACTION_TYPES).map((type) => {
+export const TypeOffers = ACTION_TYPES.concat(PLACE_TYPES).map((type) => {
   return {
     name: type,
     offers: getRandomSet(OPTIONS, getRandomNumber(0, MAX_OPTIONS_NUM)),
@@ -101,7 +102,7 @@ const getEvent = () => {
     type: type.name,
     city: city.name,
     description: city.description,
-    images: getImageURLs(getRandomNumber(0, IMAGE_MAX_NUM)),
+    images: city.images,
     time: {
       start: time,
       end: time + Math.random() * MAX_DURATION,
