@@ -2,7 +2,7 @@ import {render, Position} from '../util/dom';
 import {compareEventsByTime} from '../util/tools';
 import {formatDate, getDateDifference} from '../components/date-formater';
 import PointController from './point';
-import {SortType, Mode} from '../constants';
+import {SortType, FilterType, Mode} from '../constants';
 import {TypeOffers} from '../mock';
 
 
@@ -26,6 +26,7 @@ export default class TripController {
     this._events = events;
     this._creatingEvent = null;
     this._sortType = SortType.EVENT;
+    this._filterType = FilterType.EVERYTHING;
     this._tripDays = new TripDays();
     this._tripEmpty = new TripEmpty();
     this._sorting = new Sorting();
@@ -37,6 +38,8 @@ export default class TripController {
   }
 
   init() {
+    const filters = document.querySelectorAll(`.trip-filters__filter-input`);
+
     if (this._events.length === 0) {
       render(this._container, this._tripEmpty.getElement(), Position.BEFOREEND);
       return;
@@ -45,10 +48,13 @@ export default class TripController {
     this._events = this._getSorteByTimeEvents(this._events);
 
     render(this._container, this._sorting.getElement(), Position.BEFOREEND);
-    this._sorting.getElement().addEventListener(`click`, (evt) => this._onSortClick(evt));
-
     render(tripInfo, this._route.getElement(), Position.AFTERBEGIN);
     this._renderEvents();
+
+    this._sorting.getElement().addEventListener(`click`, (evt) => this._onSortClick(evt));
+    filters.forEach((filter) => {
+      filter.addEventListener(`change`, this._onFilterChange.bind(this));
+    });
   }
 
   hide() {
@@ -80,7 +86,6 @@ export default class TripController {
     this._subscriptions.push(this._creatingEvent.setDefaultView.bind(this._creatingEvent));
     document.querySelector(`.trip-main__event-add-btn`).disabled = true;
   }
-
 
   _getSorteByTimeEvents(events) {
     return events.sort(compareEventsByTime);
@@ -183,6 +188,9 @@ export default class TripController {
     if (evt.target.tagName.toLowerCase() !== `label`) {
       return;
     }
+
+    document.querySelector(`.trip-main__event-add-btn`).disabled = false;
+
     this._sorting.getElement().querySelector(`#sort-${evt.target.dataset.sortType}`).checked = true;
     this._tripDays.getElement().innerHTML = ``;
     this._sortType = evt.target.dataset.sortType;
@@ -190,18 +198,29 @@ export default class TripController {
   }
 
   _getSortedEvents() {
-    let currentEvents = [];
     switch (this._sortType) {
       case SortType.TIME:
-        currentEvents = this._events.slice().sort((a, b) => (b.time.end - b.time.start) - (a.time.end - a.time.start));
-        break;
+        return this._events.slice().sort((a, b) => (b.time.end - b.time.start) - (a.time.end - a.time.start));
       case SortType.PRICE:
-        currentEvents = this._events.slice().sort((a, b) => b.price - a.price);
-        break;
-      case SortType.EVENT:
-        currentEvents = this._events;
-        break;
+        return this._events.slice().sort((a, b) => b.price - a.price);
     }
-    return currentEvents;
+    return this._events;
+  }
+
+  _onFilterChange(evt) {
+    evt.preventDefault();
+    this._filterType = evt.target.id;
+    this._tripDays.getElement().innerHTML = ``;
+    this._renderEvents();
+  }
+
+  _getFilteredEvents() {
+    switch (this._filterType) {
+      case FilterType.FUTURE:
+        return this._events.slice().filter((point) => point.time.start > Date.now());
+      case FilterType.PAST:
+        return this._events.slice().filter((point) => point.time.start < Date.now());
+    }
+    return this._events;
   }
 }

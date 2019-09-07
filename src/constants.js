@@ -31,4 +31,10 @@ export const SortType = {
   EVENT: `event`,
 };
 
+export const FilterType = {
+  EVERYTHING: `filter-everything`,
+  FUTURE: `filter-future`,
+  PAST: `filter-past`,
+};
+
 

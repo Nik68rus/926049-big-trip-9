@@ -23,33 +23,35 @@ export default class PointController {
   }
 
   init(mode) {
+    const eventEditElement = this._eventEdit.getElement();
+    const eventViewElement = this._eventView.getElement();
+
     let renderPosition = Position.BEFOREEND;
     let currentView = this._eventView;
-    const resetBtn = this._eventEdit.getElement().querySelector(`.event__reset-btn`);
+    const resetBtn = eventEditElement.querySelector(`.event__reset-btn`);
 
     const onAddFormSubmit = (evt) => {
       evt.preventDefault();
-      const formData = new FormData(this._eventEdit.getElement().querySelector(`.event--edit`));
+      const formData = new FormData(eventEditElement.querySelector(`.event--edit`));
       const entry = {
         type: formData.get(`event-type`),
         city: formData.get(`event-destination`),
-        description: this._eventEdit.getElement().querySelector(`.event__destination-description`) ?
-          this._eventEdit.getElement().querySelector(`.event__destination-description`).textContent : ``,
-        images: [...this._eventEdit.getElement().querySelectorAll(`.event__photo`)].map((img) => img.src),
+        description: eventEditElement.querySelector(`.event__destination-description`).textContent,
+        images: [...eventEditElement.querySelectorAll(`.event__photo`)].map((img) => img.src),
         time: {
           start: new Date(formData.get(`event-start-time`)),
           end: new Date(formData.get(`event-end-time`)),
         },
-        price: formData.get(`event-price`),
-        offers: [...this._eventEdit.getElement().querySelectorAll(`.event__offer-selector`)].map((offer) => {
+        price: +formData.get(`event-price`),
+        offers: [...eventEditElement.querySelectorAll(`.event__offer-selector`)].map((offer) => {
           return {
             name: offer.querySelector(`.event__offer-checkbox`).name.replace(`event-offer-`, ``),
             title: offer.querySelector(`.event__offer-title`).textContent,
-            price: offer.querySelector(`.event__offer-price`).textContent,
+            price: +offer.querySelector(`.event__offer-price`).textContent,
             isAdded: offer.querySelector(`.event__offer-checkbox`).checked,
           };
         }),
-        isFavorite: this._eventEdit.getElement().querySelector(`.event__favorite-checkbox`).checked,
+        isFavorite: eventEditElement.querySelector(`.event__favorite-checkbox`).checked,
       };
       this._onDataChange(entry, mode === Mode.DEFAULT ? this._event : null);
       document.removeEventListener(`keydown`, onEscKeyDown);
@@ -59,11 +61,11 @@ export default class PointController {
     const onEscKeyDown = (evt) => {
       if (isEscapeKey(evt)) {
         if (mode === Mode.ADDING) {
-          this._container.removeChild(this._eventEdit.getElement());
+          this._container.removeChild(eventEditElement);
           this._onDataChange(null, null);
           addBtn.disabled = false;
         } else {
-          this._container.replaceChild(this._eventView.getElement(), this._eventEdit.getElement());
+          this._container.replaceChild(eventViewElement, eventEditElement);
         }
         document.removeEventListener(`keydown`, onEscKeyDown);
       }
@@ -74,10 +76,10 @@ export default class PointController {
       renderPosition = Position.AFTERBEGIN;
       currentView = this._eventEdit;
       resetBtn.textContent = `Cancel`;
-      this._eventEdit.getElement().querySelector(`.event__favorite-btn`).classList.add(`visually-hidden`);
+      eventEditElement.querySelector(`.event__favorite-btn`).classList.add(`visually-hidden`);
     }
 
-    flatpickr(this._eventEdit.getElement().querySelector(`#event-start-time-1`), {
+    flatpickr(eventEditElement.querySelector(`#event-start-time-1`), {
       altInput: true,
       allowInput: true,
       enableTime: true,
@@ -85,7 +87,7 @@ export default class PointController {
       altFormat: `d/m/Y H:i`,
     });
 
-    flatpickr(this._eventEdit.getElement().querySelector(`#event-end-time-1`), {
+    flatpickr(eventEditElement.querySelector(`#event-end-time-1`), {
       altInput: true,
       allowInput: true,
       enableTime: true,
@@ -93,22 +95,22 @@ export default class PointController {
       altFormat: `d/m/Y H:i`,
     });
 
-    this._eventView.getElement()
+    eventViewElement
       .querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, () => {
         this._onChangeView();
-        this._container.replaceChild(this._eventEdit.getElement(), this._eventView.getElement());
+        this._container.replaceChild(eventEditElement, eventViewElement);
         document.addEventListener(`keydown`, onEscKeyDown);
       });
 
-    this._eventEdit.getElement()
+    eventEditElement
       .querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, () => {
         this._onChangeView();
         document.removeEventListener(`keydown`, onEscKeyDown);
       });
 
-    this._eventEdit.getElement()
+    eventEditElement
       .querySelector(`.event`)
       .addEventListener(`submit`, onAddFormSubmit);
 
