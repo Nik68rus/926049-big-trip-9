@@ -1,5 +1,5 @@
 export const makeMarkupGenerator = (generator, separator = `\n`) =>
-  (markups) => markups.map(generator).join(separator);
+  (markups) => [...markups].map(generator).join(separator);
 
 export const Position = {
   AFTERBEGIN: `afterbegin`,

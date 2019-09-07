@@ -4,7 +4,7 @@ export default class SiteMenu extends AbstractComponent {
   constructor({name, isActive}) {
     super();
     this._name = name;
-    this._isAcive = isActive;
+    this._isActive = isActive;
   }
 
   getTemplate() {

@@ -10,6 +10,7 @@ import TripEmpty from './trip-empty';
 import Day from './day';
 import DayDate from './day-date';
 import DayEvents from './day-events';
+import Statistic from './statistic';
 
 export {
   AbstractComponent,
@@ -24,4 +25,5 @@ export {
   Day,
   DayDate,
   DayEvents,
+  Statistic,
 };

@@ -2,7 +2,7 @@ import {PLACE_TYPES, ACTION_TYPES} from '../constants';
 import {CITIES, CitiesWithDescription, TypeOffers} from '../mock';
 import {formatDate, formatTime} from './date-formater';
 import {makeMarkupGenerator} from '../util/dom';
-import {makeFirstCharCapital} from '../util/tools';
+import {makeFirstCharCapital, hideIfTrue} from '../util/tools';
 import AbstractComponent from './abstarct-component';
 
 export default class EventEdit extends AbstractComponent {
@@ -19,35 +19,31 @@ export default class EventEdit extends AbstractComponent {
 
     this._typeInit();
     this._cityInit();
+    this._detailsInit();
   }
 
   _typeInit() {
-    const typeButtons = this.getElement().querySelectorAll(`.event__type-input`);
-    const offerSection = this.getElement().querySelector(`.event__section--offers`);
-    const currentOffers = this.getElement().querySelector(`.event__available-offers`);
-
-    const initOffers = (offers) => {
-      if (offers.length === 0) {
-        offerSection.classList.add(`visually-hidden`);
-      } else {
-        offerSection.classList.remove(`visually-hidden`);
-      }
-    };
+    const element = this.getElement();
+    const typeButtons = element.querySelectorAll(`.event__type-input`);
+    const offerSection = element.querySelector(`.event__section--offers`);
+    const currentOffers = element.querySelector(`.event__available-offers`);
 
     const onTypeClick = (evt) => {
-      const target = evt.target;
-      const curentType = TypeOffers.find(({name}) => name === target.value);
+      const type = evt.target.value;
+      const curentType = TypeOffers.find(({name}) => name === type);
 
-      initOffers(curentType.offers);
-      this.getElement().querySelector(`.event__type-icon`).src = `img/icons/${curentType.name}.png`;
-      this.getElement().querySelector(`.event__type-output`).textContent = `${makeFirstCharCapital(curentType.name)} ${PLACE_TYPES.indexOf(curentType.name) < 0 ? `to` : `in`}`;
-      this.getElement().querySelector(`.event__type-toggle`).checked = false;
+      hideIfTrue(offerSection, curentType.offers.length === 0);
+
+      element.querySelector(`.event__type-icon`).src = `img/icons/${curentType.name}.png`;
+      element.querySelector(`.event__type-output`).textContent = `${makeFirstCharCapital(curentType.name)} ${PLACE_TYPES.indexOf(curentType.name) < 0 ? `to` : `in`}`;
+      element.querySelector(`.event__type-toggle`).checked = false;
 
       currentOffers.innerHTML = ``;
       currentOffers.insertAdjacentHTML(`beforeEnd`, getEventOffersMarkup(curentType.offers));
+      this._detailsInit();
     };
 
-    initOffers(this._offers);
+    hideIfTrue(offerSection, this._offers.length === 0);
 
     typeButtons.forEach((type) => {
       type.addEventListener(`click`, onTypeClick);
@@ -55,18 +51,34 @@ export default class EventEdit extends AbstractComponent {
   }
 
   _cityInit() {
-    const city = this.getElement().querySelector(`.event__input--destination`);
-    const destinationHeader = this.getElement().querySelector(`.event__section-title--destination`);
-    const description = this.getElement().querySelector(`.event__destination-description`);
+    const element = this.getElement();
+    const city = element.querySelector(`.event__input--destination`);
+    const description = element.querySelector(`.event__destination-description`);
+    const photoContainer = element.querySelector(`.event__photos-container`);
+    const photoTape = element.querySelector(`.event__photos-tape`);
 
     const onCityChange = () => {
       const cityInfo = CitiesWithDescription.find(({name}) => name === city.value);
       description.textContent = cityInfo.description;
-      destinationHeader.style.display = description.textContent > 0 ? `block` : `none`;
+      hideIfTrue(photoContainer, cityInfo.images.length === 0);
+      photoTape.innerHTML = getPhotosMarkup(cityInfo.images);
+      this._detailsInit();
     };
 
-    destinationHeader.style.display = description.textContent > 0 ? `block` : `none`;
+    hideIfTrue(photoContainer, this._images.length === 0);
+
     city.addEventListener(`change`, onCityChange);
+  }
+
+  _detailsInit() {
+    const element = this.getElement();
+    const eventDetails = element.querySelector(`.event__details`);
+    const destinationHeader = element.querySelector(`.event__section-title--destination`);
+    const hasNoDescription = element.querySelector(`.event__destination-description`).textContent.length < 1;
+    const hasNoOffers = element.querySelector(`.event__section--offers`).classList.contains(`visually-hidden`);
+    const hasNoPictures = element.querySelector(`.event__photos-tape`).children.length < 1;
+    hideIfTrue(eventDetails, hasNoDescription && hasNoOffers && hasNoPictures);
+    hideIfTrue(destinationHeader, hasNoDescription && hasNoPictures);
   }
 
   getTemplate() {
@@ -214,7 +226,7 @@ const getEventOfferMarkup = ({title, name, price, isAdded}) => `
 const getEventOffersMarkup = makeMarkupGenerator(getEventOfferMarkup, `\n`);
 
 const getOffersContainerMarkup = (offers) => `
-    <section class="event__section  event__section--offers">
+    <section class="event__section  event__section--offers ${offers.size === 0 ? `visually-hidden` : ``}">
       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
       <div class="event__available-offers">
         ${getEventOffersMarkup(offers)}
@@ -232,10 +244,10 @@ const getPhotoMarkup = (url) =>
 
 const getPhotosMarkup = makeMarkupGenerator(getPhotoMarkup, `\n`);
 
-const getPhotoContainerMarkup = (urls) => urls.length > 0 ? `
+const getPhotoContainerMarkup = (urls) => `
   <div class="event__photos-container">
     <div class="event__photos-tape">
-      ${getPhotosMarkup(urls)}
+      ${urls.length > 0 ? getPhotosMarkup(urls) : ``}
     </div>
   </div>
-` : ``;
+`;
