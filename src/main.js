@@ -5,9 +5,11 @@ import {
 } from './components';
 
 import TripController from './controllers/trip';
+import Stats from './controllers/stat';
 import {render, Position} from './util/dom';
 import {Mock} from './mock';
 
+const pageMainContainer = document.querySelector(`.page-main .page-body__container`);
 const tripControls = document.querySelector(`.trip-main__trip-controls`);
 const tripEvents = document.querySelector(`.trip-events`);
 const statistics = new Statistic();
@@ -100,5 +102,8 @@ filterElements.forEach(renderFilter);
 
 const tripController = new TripController(tripEvents, events);
 tripController.init();
+render(pageMainContainer, statistics.getElement(), Position.BEFOREEND);
+const statsController = new Stats(pageMainContainer);
+
 
 document.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, onAddEventBtnClick);

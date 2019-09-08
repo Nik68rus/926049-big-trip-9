@@ -35,11 +35,10 @@ export default class TripController {
     this._subscriptions = [];
     this._onChangeView = this._onChangeView.bind(this);
     this._onDataChange = this._onDataChange.bind(this);
+    this._onFilterChange = this._onFilterChange.bind(this);
   }
 
   init() {
-    const filters = document.querySelectorAll(`.trip-filters__filter-input`);
-
     if (this._events.length === 0) {
       render(this._container, this._tripEmpty.getElement(), Position.BEFOREEND);
       return;
@@ -52,9 +51,8 @@ export default class TripController {
     this._renderEvents();
 
     this._sorting.getElement().addEventListener(`click`, (evt) => this._onSortClick(evt));
-    filters.forEach((filter) => {
-      filter.addEventListener(`change`, this._onFilterChange.bind(this));
-    });
+    document.querySelector(`.trip-filters`).addEventListener(`change`, this._onFilterChange);
+    this._getTypeCost(this._events[0].type);
   }
 
   hide() {
@@ -215,12 +213,17 @@ export default class TripController {
   }
 
   _getFilteredEvents(sortedEvents) {
+    const timeNow = new Date();
     switch (this._filterType) {
       case FilterType.FUTURE:
-        return sortedEvents.filter((point) => new Date(point.time.start) > new Date(Date.now()));
+        return sortedEvents.filter((point) => point.time.start > timeNow);
       case FilterType.PAST:
-        return sortedEvents.filter((point) => new Date(point.time.start) < new Date(Date.now()));
+        return sortedEvents.filter((point) => point.time.start < timeNow);
     }
     return sortedEvents;
+  }
+
+  _getTypeCost(type) {
+    console.log(this._events.filter((curentEvent) => curentEvent.type === type).map((curentEvent) => curentEvent.price));
   }
 }
