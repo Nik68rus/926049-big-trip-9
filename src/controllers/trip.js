@@ -52,7 +52,6 @@ export default class TripController {
 
     this._sorting.getElement().addEventListener(`click`, (evt) => this._onSortClick(evt));
     document.querySelector(`.trip-filters`).addEventListener(`change`, this._onFilterChange);
-    this._getTypeCost(this._events[0].type);
   }
 
   hide() {
@@ -221,9 +220,5 @@ export default class TripController {
         return sortedEvents.filter((point) => point.time.start < timeNow);
     }
     return sortedEvents;
-  }
-
-  _getTypeCost(type) {
-    console.log(this._events.filter((curentEvent) => curentEvent.type === type).map((curentEvent) => curentEvent.price));
   }
 }
