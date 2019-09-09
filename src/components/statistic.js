@@ -1,7 +1,7 @@
 import AbstractComponent from './abstarct-component';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import {PLACE_TYPES, ACTION_TYPES, Time} from '../constants';
+import {PLACE_TYPES, ACTION_TYPES, Time, chartMaxHeight} from '../constants';
 
 const reducer = (accumulator, currentValue) => accumulator + currentValue;
 const priceMap = (curentEvent) => curentEvent.price;
@@ -41,6 +41,10 @@ export default class Statistic extends AbstractComponent {
     const moneyChartData = this._getCosts(ACTION_TYPES.concat(PLACE_TYPES));
     const transportChartData = this._getDurationRatios(this._getDurations(ACTION_TYPES));
     const timeChartData = this._getDurationHours(this._getDurations(ACTION_TYPES.concat(PLACE_TYPES)));
+
+    moneyCtx.style.maxHeight = chartMaxHeight;
+    transportCtx.style.maxHeight = chartMaxHeight;
+    timeCtx.style.maxHeight = chartMaxHeight;
 
     this._moneyChart = new Chart(moneyCtx, this._makeChartConfig(`MONEY`, moneyChartData, (value) => `€` + value));
     this._transportChart = new Chart(transportCtx, this._makeChartConfig(`TRANSPORT`, transportChartData, (value) => value + `x`));
@@ -131,6 +135,7 @@ export default class Statistic extends AbstractComponent {
             align: `start`,
           }
         },
+        maintainAspectRatio: false,
         scales: {
           yAxes: [{
             gridLines: {

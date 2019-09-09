@@ -37,4 +37,4 @@ export const FilterType = {
   PAST: `filter-past`,
 };
 
-
+export const chartMaxHeight = `200px`;
