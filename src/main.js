@@ -8,9 +8,9 @@ import TripController from './controllers/trip';
 import {render, Position} from './util/dom';
 import {Mock} from './mock';
 
+const pageMainContainer = document.querySelector(`.page-main .page-body__container`);
 const tripControls = document.querySelector(`.trip-main__trip-controls`);
 const tripEvents = document.querySelector(`.trip-events`);
-const statistics = new Statistic();
 
 const menuElements = [
   {name: `Table`, isActive: true},
@@ -75,6 +75,7 @@ const onMenuClick = (evt) => {
       tripController.show();
       break;
     case `Stats`:
+      statistics.update(tripController._events);
       statistics.getElement().classList.remove(`visually-hidden`);
       tripFilters.classList.add(`visually-hidden`);
       sorting.classList.add(`visually-hidden`);
@@ -88,6 +89,7 @@ const onAddEventBtnClick = () => {
 };
 
 const events = Mock.load();
+const statistics = new Statistic(events);
 
 renderMenuWrapper();
 menuElements.forEach(renderMenu);
@@ -100,5 +102,7 @@ filterElements.forEach(renderFilter);
 
 const tripController = new TripController(tripEvents, events);
 tripController.init();
+render(pageMainContainer, statistics.getElement(), Position.BEFOREEND);
+statistics.init();
 
 document.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, onAddEventBtnClick);
