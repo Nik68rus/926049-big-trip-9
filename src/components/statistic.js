@@ -6,6 +6,9 @@ import {PLACE_TYPES, ACTION_TYPES, Time, chartMaxHeight} from '../constants';
 const reducer = (accumulator, currentValue) => accumulator + currentValue;
 const priceMap = (curentEvent) => curentEvent.price;
 const durationMap = (curentEvent) => curentEvent.time.end - curentEvent.time.start;
+const moneyFormatter = (value) => `€` + value;
+const transportFormatter = (value) => value + `x`;
+const timeFormatter = (value) => value + `H`;
 
 export default class Statistic extends AbstractComponent {
   constructor(events) {
@@ -38,24 +41,19 @@ export default class Statistic extends AbstractComponent {
     const transportCtx = document.querySelector(`.statistics__chart--transport`);
     const timeCtx = document.querySelector(`.statistics__chart--time`);
 
-    const moneyChartData = this._getCosts(ACTION_TYPES.concat(PLACE_TYPES));
-    const transportChartData = this._getDurationRatios(this._getDurations(ACTION_TYPES));
-    const timeChartData = this._getDurationHours(this._getDurations(ACTION_TYPES.concat(PLACE_TYPES)));
+    moneyCtx.style.maxHeight = transportCtx.style.maxHeight = timeCtx.style.maxHeight = chartMaxHeight;
 
-    moneyCtx.style.maxHeight = chartMaxHeight;
-    transportCtx.style.maxHeight = chartMaxHeight;
-    timeCtx.style.maxHeight = chartMaxHeight;
-
-    this._moneyChart = new Chart(moneyCtx, this._makeChartConfig(`MONEY`, moneyChartData, (value) => `€` + value));
-    this._transportChart = new Chart(transportCtx, this._makeChartConfig(`TRANSPORT`, transportChartData, (value) => value + `x`));
-    this._timeChart = new Chart(timeCtx, this._makeChartConfig(`TIME`, timeChartData, (value) => value + `H`));
+    this._updateData(this._events);
+    this._moneyChart = new Chart(moneyCtx, this._makeChartConfig(`MONEY`, this._moneyChartData, moneyFormatter));
+    this._transportChart = new Chart(transportCtx, this._makeChartConfig(`TRANSPORT`, this._transportChartData, transportFormatter));
+    this._timeChart = new Chart(timeCtx, this._makeChartConfig(`TIME`, this._timeChartData, timeFormatter));
   }
 
   update(actualEvents) {
-    this._events = actualEvents;
-    this._updateChart(this._moneyChart, this._getCosts(ACTION_TYPES.concat(PLACE_TYPES)));
-    this._updateChart(this._transportChart, this._getDurationRatios(this._getDurations(ACTION_TYPES)));
-    this._updateChart(this._timeChart, this._getDurationHours(this._getDurations(ACTION_TYPES.concat(PLACE_TYPES))));
+    this._updateData(actualEvents);
+    this._updateChart(this._moneyChart, this._moneyChartData);
+    this._updateChart(this._transportChart, this._transportChartData);
+    this._updateChart(this._timeChart, this._timeChartData);
   }
 
   _getTypeData(type, dataMap) {
@@ -165,6 +163,13 @@ export default class Statistic extends AbstractComponent {
         },
       }
     };
+  }
+
+  _updateData(actualData) {
+    this._events = actualData;
+    this._moneyChartData = this._getCosts(ACTION_TYPES.concat(PLACE_TYPES));
+    this._transportChartData = this._getDurationRatios(this._getDurations(ACTION_TYPES));
+    this._timeChartData = this._getDurationHours(this._getDurations(ACTION_TYPES.concat(PLACE_TYPES)));
   }
 
   _updateChart(chart, newData) {
