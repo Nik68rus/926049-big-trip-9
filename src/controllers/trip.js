@@ -91,6 +91,7 @@ export default class TripController {
   }
 
   _renderEvents() {
+    this._route.update(this._events);
     if (this._sortType === SortType.EVENT) {
       this._renderEventsByDefault();
     } else {

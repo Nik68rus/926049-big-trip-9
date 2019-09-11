@@ -110,8 +110,11 @@ filterElements.forEach(renderFilter);
 
 
 const tripController = new TripController(tripEvents, events);
+tripController.init(events);
 
-api.getPoints().then((points) => tripController.init(points));
+//api.getPoints().then((points) => tripController.init(points));
+
+console.log(api.getOffers());
 
 render(pageMainContainer, statistics.getElement(), Position.BEFOREEND);
 statistics.init();

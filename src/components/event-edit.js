@@ -239,15 +239,15 @@ const getDestinationMarkup = (text) =>`
     <p class="event__destination-description">${text}</p>
 `;
 
-const getPhotoMarkup = (url) =>
-  `<img class="event__photo" src="${url}" alt="Event photo">`;
+const getPhotoMarkup = ({link, description}) =>
+  `<img class="event__photo" src="${link}" alt="${description}">`;
 
 const getPhotosMarkup = makeMarkupGenerator(getPhotoMarkup, `\n`);
 
-const getPhotoContainerMarkup = (urls) => `
+const getPhotoContainerMarkup = (images) => `
   <div class="event__photos-container">
     <div class="event__photos-tape">
-      ${urls.length > 0 ? getPhotosMarkup(urls) : ``}
+      ${images.length > 0 ? getPhotosMarkup(images) : ``}
     </div>
   </div>
 `;

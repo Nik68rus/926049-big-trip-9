@@ -6,7 +6,12 @@ export default class ModelPoint {
     this.type = data.type;
     this.city = data.destination.name;
     this.description = data.destination.description;
-    this.images = data.destination.pictures.map((pic) => pic.src);
+    this.images = data.destination.pictures.map((pic) => {
+      return {
+        link: pic.src,
+        description: pic.description,
+      };
+    });
     this.time = {
       start: data.date_from,
       end: data.date_to,
