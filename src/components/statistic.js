@@ -1,7 +1,7 @@
 import AbstractComponent from './abstarct-component';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import {PLACE_TYPES, ACTION_TYPES, Time, chartMaxHeight} from '../constants';
+import {PLACE_TYPES, ACTION_TYPES, Time, chartMaxHeight, TypeEmoji} from '../constants';
 
 const reducer = (accumulator, currentValue) => accumulator + currentValue;
 const priceMap = (curentEvent) => curentEvent.price;
@@ -66,6 +66,10 @@ export default class Statistic extends AbstractComponent {
     }
   }
 
+  _getQuantity(type) {
+    return this._events.filter((curentEvent) => curentEvent.type === type).length;
+  }
+
   _getCosts(types) {
     return types.map((type) => {
       return {
@@ -81,30 +85,22 @@ export default class Statistic extends AbstractComponent {
     return types.map((type) => {
       return {
         name: type,
-        data: this._getTypeData(type, durationMap),
+        data: Math.round(this._getTypeData(type, durationMap) / Time.HOUR),
       };
     })
     .filter((type) => type.data > 0)
     .sort((a, b) => b.data - a.data);
   }
 
-  _getDurationRatios(durations) {
-    const minDuration = Math.min.apply(null, durations.map((type) => type.data));
-    return durations.map((type) => {
+  _getQuantities(types) {
+    return types.map((type) => {
       return {
-        name: type.name,
-        data: +(type.data / minDuration).toFixed(2),
+        name: type,
+        data: this._getQuantity(type),
       };
-    });
-  }
-
-  _getDurationHours(durations) {
-    return durations.map((type) => {
-      return {
-        name: type.name,
-        data: Math.round(type.data / Time.HOUR),
-      };
-    });
+    })
+    .filter((type) => type.data > 0)
+    .sort((a, b) => b.data - a.data);
   }
 
   _makeChartConfig(title, data, infoFormatter) {
@@ -168,12 +164,12 @@ export default class Statistic extends AbstractComponent {
   _updateData(actualData) {
     this._events = actualData;
     this._moneyChartData = this._getCosts(ACTION_TYPES.concat(PLACE_TYPES));
-    this._transportChartData = this._getDurationRatios(this._getDurations(ACTION_TYPES));
-    this._timeChartData = this._getDurationHours(this._getDurations(ACTION_TYPES.concat(PLACE_TYPES)));
+    this._transportChartData = this._getQuantities(ACTION_TYPES);
+    this._timeChartData = this._getDurations(ACTION_TYPES.concat(PLACE_TYPES));
   }
 
   _updateChart(chart, newData) {
-    chart.data.labels = newData.map((type) => type.name.toUpperCase());
+    chart.data.labels = newData.map((type) => `${TypeEmoji[type.name]} ${type.name.toUpperCase()}`);
     chart.data.datasets[0].data = newData.map((type) => type.data);
     chart.update();
   }

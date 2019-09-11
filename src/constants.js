@@ -20,6 +20,19 @@ export const ACTION_TYPES = [
   `transport`,
 ];
 
+export const TypeEmoji = {
+  bus: `🚌`,
+  drive: `🚗`,
+  flight: `✈️`,
+  ship: `🚢`,
+  taxi: `🚕`,
+  train: `🚆`,
+  transport: `🚘`,
+  [`check-in`]: `🏨`,
+  restaurant: `🍽️`,
+  sightseeing: `🗿`,
+};
+
 export const Mode = {
   ADDING: `adding`,
   DEFAULT: `default`,
