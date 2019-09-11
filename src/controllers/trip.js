@@ -38,7 +38,8 @@ export default class TripController {
     this._onFilterChange = this._onFilterChange.bind(this);
   }
 
-  init() {
+  init(events) {
+    this._events = events;
     if (this._events.length === 0) {
       render(this._container, this._tripEmpty.getElement(), Position.BEFOREEND);
       return;
@@ -48,6 +49,7 @@ export default class TripController {
 
     render(this._container, this._sorting.getElement(), Position.BEFOREEND);
     render(tripInfo, this._route.getElement(), Position.AFTERBEGIN);
+    this._route.update(this._events);
     this._renderEvents();
 
     this._sorting.getElement().addEventListener(`click`, (evt) => this._onSortClick(evt));

@@ -11,6 +11,8 @@ import Day from './day';
 import DayDate from './day-date';
 import DayEvents from './day-events';
 import Statistic from './statistic';
+import ModelPoint from './model-point';
+import API from './api';
 
 export {
   AbstractComponent,
@@ -26,4 +28,6 @@ export {
   DayDate,
   DayEvents,
   Statistic,
+  ModelPoint,
+  API,
 };

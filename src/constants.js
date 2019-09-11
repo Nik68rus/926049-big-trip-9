@@ -51,3 +51,10 @@ export const FilterType = {
 };
 
 export const chartMaxHeight = `200px`;
+
+export const Method = {
+  GET: `GET`,
+  POST: `POST`,
+  PUT: `PUT`,
+  DELETE: `DELETE`
+};

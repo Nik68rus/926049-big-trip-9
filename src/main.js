@@ -2,6 +2,7 @@ import {
   SiteMenu,
   Filter,
   Statistic,
+  API,
 } from './components';
 
 import TripController from './controllers/trip';
@@ -11,6 +12,13 @@ import {Mock} from './mock';
 const pageMainContainer = document.querySelector(`.page-main .page-body__container`);
 const tripControls = document.querySelector(`.trip-main__trip-controls`);
 const tripEvents = document.querySelector(`.trip-events`);
+
+const AUTHORIZATION = `Basic dXNlckBwYXNzd29yZAo=${Math.random()}`;
+const END_POINT = `https://htmlacademy-es-9.appspot.com/big-trip/`;
+const api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
+
+console.log(api.getPoints());
+
 
 const menuElements = [
   {name: `Table`, isActive: true},
@@ -100,8 +108,11 @@ menu.addEventListener(`click`, onMenuClick);
 renderFilterWrapper();
 filterElements.forEach(renderFilter);
 
+
 const tripController = new TripController(tripEvents, events);
-tripController.init();
+
+api.getPoints().then((points) => tripController.init(points));
+
 render(pageMainContainer, statistics.getElement(), Position.BEFOREEND);
 statistics.init();
 
