@@ -7,7 +7,6 @@ import {
 
 import TripController from './controllers/trip';
 import {render, Position} from './util/dom';
-import {Mock} from './mock';
 
 const pageMainContainer = document.querySelector(`.page-main .page-body__container`);
 const tripControls = document.querySelector(`.trip-main__trip-controls`);
@@ -15,10 +14,9 @@ const tripEvents = document.querySelector(`.trip-events`);
 
 const AUTHORIZATION = `Basic dXNlckBwYXNzd29yZAo=${Math.random()}`;
 const END_POINT = `https://htmlacademy-es-9.appspot.com/big-trip/`;
+const tripController = new TripController(tripEvents, []);
 const api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
-
-console.log(api.getPoints());
-
+const statistics = new Statistic([]);
 
 const menuElements = [
   {name: `Table`, isActive: true},
@@ -96,9 +94,6 @@ const onAddEventBtnClick = () => {
   tripController.createEvent();
 };
 
-const events = Mock.load();
-const statistics = new Statistic(events);
-
 renderMenuWrapper();
 menuElements.forEach(renderMenu);
 
@@ -108,13 +103,9 @@ menu.addEventListener(`click`, onMenuClick);
 renderFilterWrapper();
 filterElements.forEach(renderFilter);
 
-
-const tripController = new TripController(tripEvents, events);
-tripController.init(events);
-
-//api.getPoints().then((points) => tripController.init(points));
-
-console.log(api.getOffers());
+api.getOffers().then((offers) => tripController.getOffers(offers));
+api.getDestinations().then((destinations) => tripController.getDestinations(destinations));
+api.getPoints().then((points) => tripController.init(points));
 
 render(pageMainContainer, statistics.getElement(), Position.BEFOREEND);
 statistics.init();

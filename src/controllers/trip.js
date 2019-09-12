@@ -81,9 +81,17 @@ export default class TripController {
 
     this._onChangeView();
 
-    this._creatingEvent = new PointController(this._tripDays.getElement(), defaultEvent, Mode.ADDING, this._onDataChange, this._onChangeView);
+    this._creatingEvent = new PointController(this._tripDays.getElement(), defaultEvent, Mode.ADDING, this._onDataChange, this._onChangeView, this._destinations, this._offers);
     this._subscriptions.push(this._creatingEvent.setDefaultView.bind(this._creatingEvent));
     document.querySelector(`.trip-main__event-add-btn`).disabled = true;
+  }
+
+  getOffers(offers) {
+    this._offers = offers;
+  }
+
+  getDestinations(destinations) {
+    this._destinations = destinations;
   }
 
   _getSorteByTimeEvents(events) {
@@ -144,7 +152,7 @@ export default class TripController {
   }
 
   _renderEvent(container, curentEvent) {
-    const pointController = new PointController(container, curentEvent, Mode.DEFAULT, this._onDataChange, this._onChangeView);
+    const pointController = new PointController(container, curentEvent, Mode.DEFAULT, this._onDataChange, this._onChangeView, this._destinations, this._offers);
     this._subscriptions.push(pointController.setDefaultView.bind(pointController));
   }
 

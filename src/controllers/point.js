@@ -10,13 +10,13 @@ const addBtn = document.querySelector(`.trip-main__event-add-btn`);
 
 
 export default class PointController {
-  constructor(container, eventInfo, mode, onDataChange, onChangeView) {
+  constructor(container, eventInfo, mode, onDataChange, onChangeView, destinations, offers) {
     this._container = container;
     this._event = eventInfo;
     this._onDataChange = onDataChange;
     this._onChangeView = onChangeView;
     this._eventView = new Event(eventInfo);
-    this._eventEdit = new EventEdit(eventInfo);
+    this._eventEdit = new EventEdit(eventInfo, destinations, offers);
     this._mode = mode;
 
     this.init(mode);
@@ -37,7 +37,12 @@ export default class PointController {
         type: formData.get(`event-type`),
         city: formData.get(`event-destination`),
         description: eventEditElement.querySelector(`.event__destination-description`).textContent,
-        images: [...eventEditElement.querySelectorAll(`.event__photo`)].map((img) => img.src),
+        images: [...eventEditElement.querySelectorAll(`.event__photo`)].map((img) => {
+          return {
+            src: img.src,
+            description: img.alt,
+          };
+        }),
         time: {
           start: new Date(formData.get(`event-start-time`)),
           end: new Date(formData.get(`event-end-time`)),
