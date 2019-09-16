@@ -85,6 +85,32 @@ export default class EventEdit extends AbstractComponent {
     hideIfTrue(destinationHeader, hasNoDescription && hasNoPictures);
   }
 
+  _unblock() {
+    this._element.querySelectorAll(`input, button`)
+      .forEach((it) => it.removeAttribute(`disabled`));
+    this._element.querySelector(`.event__save-btn`).textContent = `Save`;
+    this._element.querySelector(`.event__reset-btn`).textContent = `Delete`;
+  }
+
+  block() {
+    this._element.querySelectorAll(`input, button`)
+      .forEach((it) => it.setAttribute(`disabled`, `disabled`));
+  }
+
+  shakeRed() {
+    const ANIMATION_TIMEOUT = 600;
+    this._element.style.animation = `shake ${ANIMATION_TIMEOUT / 1000}s`;
+    this._element.style.boxShadow = `0 0 15px 2px red`;
+    this._element.style.borderRadius = `18px`;
+
+    setTimeout(() => {
+      this._element.style.animation = ``;
+      this._element.style.boxShadow = ``;
+      this._element.style.borderRadius = ``;
+      this._unblock();
+    }, ANIMATION_TIMEOUT);
+  }
+
   getTemplate() {
     return `
     <li class="trip-events__item">
