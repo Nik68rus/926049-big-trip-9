@@ -34,6 +34,7 @@ export default class PointController {
       evt.preventDefault();
       const formData = new FormData(eventEditElement.querySelector(`.event--edit`));
       const entry = {
+        id: this._event.id,
         type: formData.get(`event-type`),
         city: formData.get(`event-destination`),
         description: eventEditElement.querySelector(`.event__destination-description`).textContent,
@@ -44,8 +45,8 @@ export default class PointController {
           };
         }),
         time: {
-          start: new Date(formData.get(`event-start-time`)),
-          end: new Date(formData.get(`event-end-time`)),
+          start: new Date(formData.get(`event-start-time`)).getTime(),
+          end: new Date(formData.get(`event-end-time`)).getTime(),
         },
         price: +formData.get(`event-price`),
         offers: [...eventEditElement.querySelectorAll(`.event__offer-selector`)].map((offer) => {
@@ -58,7 +59,7 @@ export default class PointController {
         }),
         isFavorite: eventEditElement.querySelector(`.event__favorite-checkbox`).checked,
       };
-      this._onDataChange(entry, mode === Mode.DEFAULT ? this._event : null);
+      this._onDataChange(`update`, entry);
       document.removeEventListener(`keydown`, onEscKeyDown);
       addBtn.disabled = false;
     };
@@ -120,13 +121,8 @@ export default class PointController {
       .addEventListener(`submit`, onAddFormSubmit);
 
     resetBtn.addEventListener(`click`, (evt) => {
-      if (mode === Mode.DEFAULT) {
-        evt.preventDefault();
-        this._onDataChange(null, this._event);
-      } else {
-        this._onDataChange(null, null);
-        addBtn.disabled = false;
-      }
+      evt.preventDefault();
+      this._onDataChange(`delete`, this._event);
     });
 
     if (mode === Mode.ADDING && currentView === this._eventEdit) {

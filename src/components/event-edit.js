@@ -1,5 +1,4 @@
 import {PLACE_TYPES, ACTION_TYPES} from '../constants';
-//import {CITIES, CitiesWithDescription, TypeOffers} from '../mock';
 import {formatDate, formatTime} from './date-formater';
 import {makeMarkupGenerator} from '../util/dom';
 import {makeFirstCharCapital, hideIfTrue} from '../util/tools';

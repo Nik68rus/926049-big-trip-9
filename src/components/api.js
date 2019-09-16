@@ -9,6 +9,29 @@ const URL = {
   OFFERS: `offers`,
 };
 
+const toRAW = (point) => {
+  return {
+    'base_price': point.price,
+    'date_from': point.time.start,
+    'date_to': point.time.end,
+    'destination': {
+      description: point.description,
+      name: point.city,
+      pictures: point.images,
+    },
+    'id': point.id,
+    'is_favorite': point.isFavorite,
+    'offers': point.offers.map((offer) => {
+      return {
+        accepted: offer.isAdded,
+        price: offer.price,
+        title: offer.title,
+      };
+    }),
+    'type': point.type,
+  };
+};
+
 const checkStatus = (response) => {
   if (response.status >= 200 && response.status < 300) {
     return response;
@@ -44,15 +67,13 @@ export default class API {
       .then(ModelPoint.parsePoint);
   }
 
-  updatePoint({id, data}) {
+  updatePoint({id, point}) {
     return this._load({
       url: `${URL.POINTS}/${id}`,
       method: Method.PUT,
-      body: JSON.stringify(data),
+      body: JSON.stringify(toRAW(point)),
       headers: new Headers({'Content-Type': `application/json`})
-    })
-      .then(toJSON)
-      .then(ModelPoint.parsePoint);
+    });
   }
 
   deletePoint({id}) {

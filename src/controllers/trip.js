@@ -21,7 +21,7 @@ const tripInfo = document.querySelector(`.trip-main__trip-info`);
 const price = document.querySelector(`.trip-info__cost-value`);
 
 export default class TripController {
-  constructor(container, events) {
+  constructor(container, events, onDataChange) {
     this._container = container;
     this._events = events;
     this._creatingEvent = null;
@@ -31,10 +31,10 @@ export default class TripController {
     this._tripEmpty = new TripEmpty();
     this._sorting = new Sorting();
     this._route = new Route(events);
+    this._onDataChange = onDataChange;
 
     this._subscriptions = [];
     this._onChangeView = this._onChangeView.bind(this);
-    this._onDataChange = this._onDataChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
   }
 

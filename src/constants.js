@@ -58,3 +58,7 @@ export const Method = {
   PUT: `PUT`,
   DELETE: `DELETE`
 };
+
+export const AUTHORIZATION = `Basic dXNlckBwYXNzd29yZAo=${Math.random()}`;
+export const END_POINT = `https://htmlacademy-es-9.appspot.com/big-trip`;
+

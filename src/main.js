@@ -7,14 +7,12 @@ import {
 
 import TripController from './controllers/trip';
 import {render, Position} from './util/dom';
+import {AUTHORIZATION, END_POINT} from './constants';
 
 const pageMainContainer = document.querySelector(`.page-main .page-body__container`);
 const tripControls = document.querySelector(`.trip-main__trip-controls`);
 const tripEvents = document.querySelector(`.trip-events`);
 
-const AUTHORIZATION = `Basic dXNlckBwYXNzd29yZAo=${Math.random()}`;
-const END_POINT = `https://htmlacademy-es-9.appspot.com/big-trip/`;
-const tripController = new TripController(tripEvents, []);
 const api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
 const statistics = new Statistic([]);
 
@@ -93,6 +91,27 @@ const onMenuClick = (evt) => {
 const onAddEventBtnClick = () => {
   tripController.createEvent();
 };
+
+const onDataChange = (actionType, update) => {
+  switch (actionType) {
+    case `delete`:
+      api.deletePoint({
+        id: update.id
+      })
+        .then(() => api.getPoints())
+        .then((points) => tripController.init(points));
+      break;
+    case `update`:
+      api.updatePoint({
+        id: update.id,
+        point: update,
+      })
+      .then(() => api.getPoints())
+      .then((points) => tripController.init(points));
+  }
+};
+
+const tripController = new TripController(tripEvents, [], onDataChange);
 
 renderMenuWrapper();
 menuElements.forEach(renderMenu);
