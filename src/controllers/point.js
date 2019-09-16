@@ -59,7 +59,15 @@ export default class PointController {
         }),
         isFavorite: eventEditElement.querySelector(`.event__favorite-checkbox`).checked,
       };
-      this._onDataChange(`update`, entry);
+      switch (this._mode) {
+        case Mode.DEFAULT:
+          this._onDataChange(this._eventEdit, `update`, entry);
+          eventEditElement.querySelector(`.event__save-btn`).textContent = `Saving...`;
+          break;
+        case Mode.ADDING:
+          this._onDataChange(this._eventEdit, `create`, entry);
+          break;
+      }
       document.removeEventListener(`keydown`, onEscKeyDown);
       addBtn.disabled = false;
     };
@@ -68,7 +76,7 @@ export default class PointController {
       if (isEscapeKey(evt)) {
         if (mode === Mode.ADDING) {
           this._container.removeChild(eventEditElement);
-          this._onDataChange(null, null);
+          this._onDataChange(this._eventEdit, null, null);
           addBtn.disabled = false;
         } else {
           this._container.replaceChild(eventViewElement, eventEditElement);
@@ -122,7 +130,8 @@ export default class PointController {
 
     resetBtn.addEventListener(`click`, (evt) => {
       evt.preventDefault();
-      this._onDataChange(`delete`, this._event);
+      eventEditElement.querySelector(`.event__reset-btn`).textContent = `Deleting...`;
+      this._onDataChange(this._eventEdit, `delete`, this._event);
     });
 
     if (mode === Mode.ADDING && currentView === this._eventEdit) {

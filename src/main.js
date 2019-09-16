@@ -89,25 +89,40 @@ const onMenuClick = (evt) => {
 };
 
 const onAddEventBtnClick = () => {
-  tripController.createEvent();
+  tripController.createEvent(api.getNewID);
 };
 
-const onDataChange = (actionType, update) => {
+const onDataChange = (editingPoint, actionType, update) => {
+  const onError = () => {
+    editingPoint.shakeRed();
+  };
+
+  editingPoint.block();
+
   switch (actionType) {
     case `delete`:
       api.deletePoint({
         id: update.id
       })
         .then(() => api.getPoints())
-        .then((points) => tripController.init(points));
+        .then((points) => tripController.init(points))
+        .catch(onError);
       break;
     case `update`:
       api.updatePoint({
         id: update.id,
         point: update,
       })
-      .then(() => api.getPoints())
-      .then((points) => tripController.init(points));
+        .then(() => api.getPoints())
+        .then((points) => tripController.init(points))
+        .catch(onError);
+      break;
+    case `create`:
+      api.createPoint(update)
+        .then(() => api.getPoints())
+        .then((points) => tripController.init(points))
+        .catch(onError);
+      break;
   }
 };
 
