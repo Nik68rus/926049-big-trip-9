@@ -2,15 +2,19 @@ import {
   SiteMenu,
   Filter,
   Statistic,
+  API,
 } from './components';
 
 import TripController from './controllers/trip';
 import {render, Position} from './util/dom';
-import {Mock} from './mock';
+import {AUTHORIZATION, END_POINT} from './constants';
 
 const pageMainContainer = document.querySelector(`.page-main .page-body__container`);
 const tripControls = document.querySelector(`.trip-main__trip-controls`);
 const tripEvents = document.querySelector(`.trip-events`);
+
+const api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
+const statistics = new Statistic([]);
 
 const menuElements = [
   {name: `Table`, isActive: true},
@@ -88,8 +92,26 @@ const onAddEventBtnClick = () => {
   tripController.createEvent();
 };
 
-const events = Mock.load();
-const statistics = new Statistic(events);
+const onDataChange = (actionType, update) => {
+  switch (actionType) {
+    case `delete`:
+      api.deletePoint({
+        id: update.id
+      })
+        .then(() => api.getPoints())
+        .then((points) => tripController.init(points));
+      break;
+    case `update`:
+      api.updatePoint({
+        id: update.id,
+        point: update,
+      })
+      .then(() => api.getPoints())
+      .then((points) => tripController.init(points));
+  }
+};
+
+const tripController = new TripController(tripEvents, [], onDataChange);
 
 renderMenuWrapper();
 menuElements.forEach(renderMenu);
@@ -100,8 +122,10 @@ menu.addEventListener(`click`, onMenuClick);
 renderFilterWrapper();
 filterElements.forEach(renderFilter);
 
-const tripController = new TripController(tripEvents, events);
-tripController.init();
+api.getOffers().then((offers) => tripController.getOffers(offers));
+api.getDestinations().then((destinations) => tripController.getDestinations(destinations));
+api.getPoints().then((points) => tripController.init(points));
+
 render(pageMainContainer, statistics.getElement(), Position.BEFOREEND);
 statistics.init();
 

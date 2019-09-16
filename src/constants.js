@@ -20,6 +20,19 @@ export const ACTION_TYPES = [
   `transport`,
 ];
 
+export const TypeEmoji = {
+  bus: `🚌`,
+  drive: `🚗`,
+  flight: `✈️`,
+  ship: `🚢`,
+  taxi: `🚕`,
+  train: `🚆`,
+  transport: `🚘`,
+  [`check-in`]: `🏨`,
+  restaurant: `🍽️`,
+  sightseeing: `🗿`,
+};
+
 export const Mode = {
   ADDING: `adding`,
   DEFAULT: `default`,
@@ -37,4 +50,15 @@ export const FilterType = {
   PAST: `filter-past`,
 };
 
+export const chartMaxHeight = `200px`;
+
+export const Method = {
+  GET: `GET`,
+  POST: `POST`,
+  PUT: `PUT`,
+  DELETE: `DELETE`
+};
+
+export const AUTHORIZATION = `Basic dXNlckBwYXNzd29yZAo=${Math.random()}`;
+export const END_POINT = `https://htmlacademy-es-9.appspot.com/big-trip`;
 

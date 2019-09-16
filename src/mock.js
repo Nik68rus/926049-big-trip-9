@@ -72,17 +72,21 @@ const getRandomSorting = () =>
 const getRandomSet = ([...items], num) =>
   items.sort(getRandomSorting).slice(0, num);
 
-const getImageURL = () =>
-  `http://picsum.photos/300/150?r=${Math.random()}`;
+const getImage = () => {
+  return {
+    link: `http://picsum.photos/300/150?r=${Math.random()}`,
+    description: `Description of photo ${getRandomNumber(1, 100)}`,
+  };
+};
 
-const getImageURLs = (num = IMAGE_MAX_NUM) =>
-  Array.from({length: num}, getImageURL);
+const getImages = (num = IMAGE_MAX_NUM) =>
+  Array.from({length: num}, getImage);
 
 export const CitiesWithDescription = CITIES.map((city) => {
   return {
     name: city,
     description: getRandomSet(SENTENCES, getRandomNumber(0, MAX_SENTENCES_NUM)).join(` `),
-    images: getImageURLs(getRandomNumber(0, IMAGE_MAX_NUM)),
+    images: getImages(getRandomNumber(0, IMAGE_MAX_NUM)),
   };
 });
 

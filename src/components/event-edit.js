@@ -1,12 +1,11 @@
 import {PLACE_TYPES, ACTION_TYPES} from '../constants';
-import {CITIES, CitiesWithDescription, TypeOffers} from '../mock';
 import {formatDate, formatTime} from './date-formater';
 import {makeMarkupGenerator} from '../util/dom';
 import {makeFirstCharCapital, hideIfTrue} from '../util/tools';
 import AbstractComponent from './abstarct-component';
 
 export default class EventEdit extends AbstractComponent {
-  constructor({type, city, description, images, time, price, offers, isFavorite}) {
+  constructor({type, city, description, images, time, price, offers, isFavorite}, destinations, typeOffers) {
     super();
     this._type = type;
     this._city = city;
@@ -16,6 +15,11 @@ export default class EventEdit extends AbstractComponent {
     this._price = price;
     this._offers = offers;
     this._isFavorite = isFavorite;
+
+    this._CitiesWithDescription = destinations;
+    this._TypeOffers = typeOffers;
+
+    this._CITIES = destinations.map((destination) => destination.name);
 
     this._typeInit();
     this._cityInit();
@@ -30,7 +34,7 @@ export default class EventEdit extends AbstractComponent {
 
     const onTypeClick = (evt) => {
       const type = evt.target.value;
-      const curentType = TypeOffers.find(({name}) => name === type);
+      const curentType = this._TypeOffers.find(({name}) => name === type);
 
       hideIfTrue(offerSection, curentType.offers.length === 0);
 
@@ -58,7 +62,7 @@ export default class EventEdit extends AbstractComponent {
     const photoTape = element.querySelector(`.event__photos-tape`);
 
     const onCityChange = () => {
-      const cityInfo = CitiesWithDescription.find(({name}) => name === city.value);
+      const cityInfo = this._CitiesWithDescription.find(({name}) => name === city.value);
       description.textContent = cityInfo.description;
       hideIfTrue(photoContainer, cityInfo.images.length === 0);
       photoTape.innerHTML = getPhotosMarkup(cityInfo.images);
@@ -112,7 +116,7 @@ export default class EventEdit extends AbstractComponent {
             </label>
             <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${this._city}" list="destination-list-1">
             <datalist id="destination-list-1">
-              ${getDestinationListMarkup(CITIES)}
+              ${getDestinationListMarkup(this._CITIES)}
             </datalist>
           </div>
 
@@ -239,15 +243,15 @@ const getDestinationMarkup = (text) =>`
     <p class="event__destination-description">${text}</p>
 `;
 
-const getPhotoMarkup = (url) =>
-  `<img class="event__photo" src="${url}" alt="Event photo">`;
+const getPhotoMarkup = ({src, description}) =>
+  `<img class="event__photo" src="${src}" alt="${description}">`;
 
 const getPhotosMarkup = makeMarkupGenerator(getPhotoMarkup, `\n`);
 
-const getPhotoContainerMarkup = (urls) => `
+const getPhotoContainerMarkup = (images) => `
   <div class="event__photos-container">
     <div class="event__photos-tape">
-      ${urls.length > 0 ? getPhotosMarkup(urls) : ``}
+      ${images.length > 0 ? getPhotosMarkup(images) : ``}
     </div>
   </div>
 `;

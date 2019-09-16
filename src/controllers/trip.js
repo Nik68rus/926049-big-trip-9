@@ -21,7 +21,7 @@ const tripInfo = document.querySelector(`.trip-main__trip-info`);
 const price = document.querySelector(`.trip-info__cost-value`);
 
 export default class TripController {
-  constructor(container, events) {
+  constructor(container, events, onDataChange) {
     this._container = container;
     this._events = events;
     this._creatingEvent = null;
@@ -31,14 +31,15 @@ export default class TripController {
     this._tripEmpty = new TripEmpty();
     this._sorting = new Sorting();
     this._route = new Route(events);
+    this._onDataChange = onDataChange;
 
     this._subscriptions = [];
     this._onChangeView = this._onChangeView.bind(this);
-    this._onDataChange = this._onDataChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
   }
 
-  init() {
+  init(events) {
+    this._events = events;
     if (this._events.length === 0) {
       render(this._container, this._tripEmpty.getElement(), Position.BEFOREEND);
       return;
@@ -48,6 +49,7 @@ export default class TripController {
 
     render(this._container, this._sorting.getElement(), Position.BEFOREEND);
     render(tripInfo, this._route.getElement(), Position.AFTERBEGIN);
+    this._route.update(this._events);
     this._renderEvents();
 
     this._sorting.getElement().addEventListener(`click`, (evt) => this._onSortClick(evt));
@@ -79,9 +81,17 @@ export default class TripController {
 
     this._onChangeView();
 
-    this._creatingEvent = new PointController(this._tripDays.getElement(), defaultEvent, Mode.ADDING, this._onDataChange, this._onChangeView);
+    this._creatingEvent = new PointController(this._tripDays.getElement(), defaultEvent, Mode.ADDING, this._onDataChange, this._onChangeView, this._destinations, this._offers);
     this._subscriptions.push(this._creatingEvent.setDefaultView.bind(this._creatingEvent));
     document.querySelector(`.trip-main__event-add-btn`).disabled = true;
+  }
+
+  getOffers(offers) {
+    this._offers = offers;
+  }
+
+  getDestinations(destinations) {
+    this._destinations = destinations;
   }
 
   _getSorteByTimeEvents(events) {
@@ -89,6 +99,7 @@ export default class TripController {
   }
 
   _renderEvents() {
+    this._route.update(this._events);
     if (this._sortType === SortType.EVENT) {
       this._renderEventsByDefault();
     } else {
@@ -141,7 +152,7 @@ export default class TripController {
   }
 
   _renderEvent(container, curentEvent) {
-    const pointController = new PointController(container, curentEvent, Mode.DEFAULT, this._onDataChange, this._onChangeView);
+    const pointController = new PointController(container, curentEvent, Mode.DEFAULT, this._onDataChange, this._onChangeView, this._destinations, this._offers);
     this._subscriptions.push(pointController.setDefaultView.bind(pointController));
   }
 
