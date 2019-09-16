@@ -24,7 +24,6 @@ export default class ModelPoint {
   }
 
   static parsePoint(data) {
-    console.log(data);
     return new ModelPoint(data);
   }
 
