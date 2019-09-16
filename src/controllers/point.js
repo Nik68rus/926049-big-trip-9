@@ -59,7 +59,14 @@ export default class PointController {
         }),
         isFavorite: eventEditElement.querySelector(`.event__favorite-checkbox`).checked,
       };
-      this._onDataChange(`update`, entry);
+      switch (this._mode) {
+        case Mode.DEFAULT:
+          this._onDataChange(`update`, entry);
+          break;
+        case Mode.ADDING:
+          this._onDataChange(`create`, entry);
+          break;
+      }
       document.removeEventListener(`keydown`, onEscKeyDown);
       addBtn.disabled = false;
     };

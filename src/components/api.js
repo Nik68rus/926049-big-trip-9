@@ -56,15 +56,19 @@ export default class API {
     .then(ModelPoint.parsePoints);
   }
 
-  createPoint({point}) {
+  createPoint(point) {
     return this._load({
       url: URL.POINTS,
       method: Method.POST,
-      body: JSON.stringify(point),
+      body: JSON.stringify(toRAW(point)),
       headers: new Headers({'Content-Type': `application/json`})
     })
       .then(toJSON)
       .then(ModelPoint.parsePoint);
+  }
+
+  getNewID() {
+    return Math.max.apply(null, this.getPoints.map((point) => point.id)) + 1;
   }
 
   updatePoint({id, point}) {

@@ -64,8 +64,9 @@ export default class TripController {
     this._tripDays.getElement().classList.remove(`visually-hidden`);
   }
 
-  createEvent() {
+  createEvent(newID) {
     const defaultEvent = {
+      id: newID,
       type: TypeOffers[0].name,
       city: ``,
       description: ``,

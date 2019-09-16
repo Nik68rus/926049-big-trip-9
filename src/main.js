@@ -89,7 +89,7 @@ const onMenuClick = (evt) => {
 };
 
 const onAddEventBtnClick = () => {
-  tripController.createEvent();
+  tripController.createEvent(api.getNewID);
 };
 
 const onDataChange = (actionType, update) => {
@@ -106,8 +106,14 @@ const onDataChange = (actionType, update) => {
         id: update.id,
         point: update,
       })
-      .then(() => api.getPoints())
-      .then((points) => tripController.init(points));
+        .then(() => api.getPoints())
+        .then((points) => tripController.init(points));
+      break;
+    case `create`:
+      api.createPoint(update)
+        .then(() => api.getPoints())
+        .then((points) => tripController.init(points));
+      break;
   }
 };
 
