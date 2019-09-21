@@ -64,9 +64,10 @@ export default class TripController {
     this._tripDays.getElement().classList.remove(`visually-hidden`);
   }
 
-  createEvent(newID) {
+  createEvent() {
+
     const defaultEvent = {
-      id: newID,
+      id: (Math.max.apply(null, this._events.map((point) => point.id)) + 1).toString(),
       type: TypeOffers[0].name,
       city: ``,
       description: ``,
@@ -79,7 +80,6 @@ export default class TripController {
       offers: TypeOffers[0].offers,
       isFavorite: false,
     };
-
     this._onChangeView();
 
     this._creatingEvent = new PointController(this._tripDays.getElement(), defaultEvent, Mode.ADDING, this._onDataChange, this._onChangeView, this._destinations, this._offers);

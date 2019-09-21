@@ -3,6 +3,8 @@ import {
   Filter,
   Statistic,
   API,
+  Provider,
+  Store,
 } from './components';
 
 import TripController from './controllers/trip';
@@ -13,7 +15,11 @@ const pageMainContainer = document.querySelector(`.page-main .page-body__contain
 const tripControls = document.querySelector(`.trip-main__trip-controls`);
 const tripEvents = document.querySelector(`.trip-events`);
 
+const POINTS_STORE_KEY = `points-store-key`;
+
 const api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
+const store = new Store({storage: window.localStorage, key: POINTS_STORE_KEY});
+const provider = new Provider(api, store);
 const statistics = new Statistic([]);
 
 const menuElements = [
@@ -89,7 +95,7 @@ const onMenuClick = (evt) => {
 };
 
 const onAddEventBtnClick = () => {
-  tripController.createEvent(api.getNewID);
+  tripController.createEvent();
 };
 
 const onDataChange = (editingPoint, actionType, update) => {
@@ -101,27 +107,30 @@ const onDataChange = (editingPoint, actionType, update) => {
 
   switch (actionType) {
     case `delete`:
-      api.deletePoint({
+      provider.deletePoint({
         id: update.id
       })
-        .then(() => api.getPoints())
+        .then(() => provider.getPoints())
         .then((points) => tripController.init(points))
         .catch(onError);
       break;
     case `update`:
-      api.updatePoint({
+      provider.updatePoint({
         id: update.id,
         point: update,
       })
-        .then(() => api.getPoints())
+        .then(() => provider.getPoints())
         .then((points) => tripController.init(points))
         .catch(onError);
       break;
     case `create`:
-      api.createPoint(update)
-        .then(() => api.getPoints())
+      provider.createPoint(update)
+        .then(() => provider.getPoints())
         .then((points) => tripController.init(points))
-        .catch(onError);
+        .catch((err) => {
+          console.error(`fetch error: ${err}`);
+          throw err;
+        });
       break;
   }
 };
@@ -137,9 +146,9 @@ menu.addEventListener(`click`, onMenuClick);
 renderFilterWrapper();
 filterElements.forEach(renderFilter);
 
-api.getOffers().then((offers) => tripController.getOffers(offers));
-api.getDestinations().then((destinations) => tripController.getDestinations(destinations));
-api.getPoints().then((points) => tripController.init(points));
+provider.getOffers().then((offers) => tripController.getOffers(offers));
+provider.getDestinations().then((destinations) => tripController.getDestinations(destinations));
+provider.getPoints().then((points) => tripController.init(points));
 
 render(pageMainContainer, statistics.getElement(), Position.BEFOREEND);
 statistics.init();
