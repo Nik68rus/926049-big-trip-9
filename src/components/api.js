@@ -1,4 +1,5 @@
 import {Method} from '../constants';
+import {toRAW} from '../util/tools';
 import ModelPoint from './model-point';
 import ModelDestination from './model-destination';
 import ModelOffer from './model-offer';
@@ -7,29 +8,6 @@ const URL = {
   DESTINATIONS: `destinations`,
   POINTS: `points`,
   OFFERS: `offers`,
-};
-
-const toRAW = (point) => {
-  return {
-    'base_price': point.price,
-    'date_from': point.time.start,
-    'date_to': point.time.end,
-    'destination': {
-      description: point.description,
-      name: point.city,
-      pictures: point.images,
-    },
-    'id': point.id,
-    'is_favorite': point.isFavorite,
-    'offers': point.offers.map((offer) => {
-      return {
-        accepted: offer.isAdded,
-        price: offer.price,
-        title: offer.title,
-      };
-    }),
-    'type': point.type,
-  };
 };
 
 const checkStatus = (response) => {
@@ -57,6 +35,7 @@ export default class API {
   }
 
   createPoint(point) {
+    console.log(toRAW(point));
     return this._load({
       url: URL.POINTS,
       method: Method.POST,
@@ -65,10 +44,6 @@ export default class API {
     })
       .then(toJSON)
       .then(ModelPoint.parsePoint);
-  }
-
-  getNewID() {
-    return Math.max.apply(null, this.getPoints.map((point) => point.id)) + 1;
   }
 
   updatePoint({id, point}) {

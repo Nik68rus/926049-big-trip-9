@@ -15,6 +15,8 @@ import ModelPoint from './model-point';
 import ModelDestination from './model-destination';
 import ModelOffer from './model-offer';
 import API from './api';
+import Provider from './provider';
+import Store from './store';
 
 export {
   AbstractComponent,
@@ -34,4 +36,6 @@ export {
   ModelDestination,
   ModelOffer,
   API,
+  Provider,
+  Store,
 };
