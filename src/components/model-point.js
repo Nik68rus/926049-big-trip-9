@@ -23,29 +23,6 @@ export default class ModelPoint {
     this.isFavorite = data.is_favorite;
   }
 
-  toRAW() {
-    return {
-      'base_price': this.price,
-      'date_from': this.time.start,
-      'date_to': this.time.end,
-      'destination': {
-        description: this.description,
-        name: this.city,
-        pictures: this.images,
-      },
-      'id': this.id,
-      'is_favorite': this.isFavorite,
-      'offers': this.offers.map((offer) => {
-        return {
-          accepted: offer.isAdded,
-          price: offer.price,
-          title: offer.title,
-        };
-      }),
-      'type': this.type,
-    };
-  }
-
   static parsePoint(data) {
     return new ModelPoint(data);
   }

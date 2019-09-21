@@ -154,3 +154,10 @@ render(pageMainContainer, statistics.getElement(), Position.BEFOREEND);
 statistics.init();
 
 document.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, onAddEventBtnClick);
+window.addEventListener(`offline`, () => {
+  document.title = `${document.title}[OFFLINE]`;
+});
+window.addEventListener(`online`, () => {
+  document.title = document.title.split(`[OFFLINE]`)[0];
+  provider.syncPoints();
+});
