@@ -30,3 +30,23 @@ export const toRAW = (point) => {
     'type': point.type,
   };
 };
+
+export const destinationToRaw = (destination) => {
+  return {
+    name: destination.name,
+    description: destination.description,
+    pictures: destination.images,
+  };
+};
+
+export const offersToRAW = (types) => {
+  return {
+    type: types.name,
+    offers: types.offers.map((offer) => {
+      return {
+        name: offer.title,
+        price: offer.price,
+      };
+    })
+  };
+};

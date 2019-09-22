@@ -56,6 +56,10 @@ export default class TripController {
     document.querySelector(`.trip-filters`).addEventListener(`change`, this._onFilterChange);
   }
 
+  update() {
+    this.init(this._events);
+  }
+
   hide() {
     this._tripDays.getElement().classList.add(`visually-hidden`);
   }
@@ -155,27 +159,6 @@ export default class TripController {
   _renderEvent(container, curentEvent) {
     const pointController = new PointController(container, curentEvent, Mode.DEFAULT, this._onDataChange, this._onChangeView, this._destinations, this._offers);
     this._subscriptions.push(pointController.setDefaultView.bind(pointController));
-  }
-
-  _onDataChange(newData, oldData) {
-    const index = this._events.findIndex((it) => it === oldData);
-
-    if (newData === null) {
-      if (oldData === null) {
-        this._creatingEvent = null;
-      } else {
-        this._events = [...this._events.slice(0, index), ...this._events.slice(index + 1)];
-      }
-    } else {
-      if (oldData === null) {
-        this._creatingEvent = null;
-        this._events = [newData, ...this._events];
-      } else {
-        this._events[index] = newData;
-      }
-    }
-
-    this._renderEvents();
   }
 
   _onChangeView() {

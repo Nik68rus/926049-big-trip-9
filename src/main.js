@@ -15,10 +15,20 @@ const pageMainContainer = document.querySelector(`.page-main .page-body__contain
 const tripControls = document.querySelector(`.trip-main__trip-controls`);
 const tripEvents = document.querySelector(`.trip-events`);
 
-const POINTS_STORE_KEY = `points-store-key`;
+const StoreKey = {
+  POINTS: `points`,
+  OFFERS: `offers`,
+  DESTINATIONS: `destinations`,
+};
 
 const api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
-const store = new Store({storage: window.localStorage, key: POINTS_STORE_KEY});
+
+const store = {
+  points: new Store({storage: window.localStorage, key: StoreKey.POINTS}),
+  offers: new Store({storage: window.localStorage, key: StoreKey.OFFERS}),
+  destinations: new Store({storage: window.localStorage, key: StoreKey.DESTINATIONS}),
+};
+
 const provider = new Provider(api, store);
 const statistics = new Statistic([]);
 
@@ -128,7 +138,6 @@ const onDataChange = (editingPoint, actionType, update) => {
         .then(() => provider.getPoints())
         .then((points) => tripController.init(points))
         .catch((err) => {
-          console.error(`fetch error: ${err}`);
           throw err;
         });
       break;
@@ -136,6 +145,10 @@ const onDataChange = (editingPoint, actionType, update) => {
 };
 
 const tripController = new TripController(tripEvents, [], onDataChange);
+
+if (!window.navigator.onLine) {
+  document.title = `${document.title}[OFFLINE]`;
+}
 
 renderMenuWrapper();
 menuElements.forEach(renderMenu);
@@ -159,5 +172,6 @@ window.addEventListener(`offline`, () => {
 });
 window.addEventListener(`online`, () => {
   document.title = document.title.split(`[OFFLINE]`)[0];
-  provider.syncPoints();
+  provider.syncPoints()
+    .then(tripController.update());
 });
