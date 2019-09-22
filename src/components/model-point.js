@@ -1,5 +1,3 @@
-const titleReducer = (a, b) => b.length > a.length ? b : a;
-
 export default class ModelPoint {
   constructor(data) {
     this.id = data.id;
@@ -14,7 +12,7 @@ export default class ModelPoint {
     this.price = data.base_price;
     this.offers = data.offers.map((offer) => {
       return {
-        name: offer.title.split(` `).reduce(titleReducer),
+        name: offer.title.split(` `).join(`-`).toLowerCase(),
         title: offer.title,
         price: offer.price,
         isAdded: offer.accepted,
