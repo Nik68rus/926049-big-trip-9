@@ -68,7 +68,7 @@ const getOfferItemMarkup = ({title, price}) => `
 const getOffersMarkup = makeMarkupGenerator(getOfferItemMarkup, `\n`);
 
 const getSelectedOffersMarkup = (offers) =>
-  getOffersMarkup([...offers].filter((offer) => offer.isAdded));
+  getOffersMarkup([...offers].filter((offer) => offer.isAdded).slice(0, 3));
 
 const addZero = (number) =>
   number < 10 ? `0` + number : number;

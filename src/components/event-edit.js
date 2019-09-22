@@ -99,14 +99,15 @@ export default class EventEdit extends AbstractComponent {
 
   shakeRed() {
     const ANIMATION_TIMEOUT = 600;
-    this._element.style.animation = `shake ${ANIMATION_TIMEOUT / 1000}s`;
-    this._element.style.boxShadow = `0 0 15px 2px red`;
-    this._element.style.borderRadius = `18px`;
+    const formElement = this._element.querySelector(`.event--edit`);
+    formElement.style.animation = `shake ${ANIMATION_TIMEOUT / 1000}s`;
+    formElement.style.boxShadow = `0 0 15px 2px red`;
+    formElement.style.borderRadius = `18px`;
 
     setTimeout(() => {
-      this._element.style.animation = ``;
-      this._element.style.boxShadow = ``;
-      this._element.style.borderRadius = ``;
+      formElement.style.animation = ``;
+      formElement.style.boxShadow = ``;
+      formElement.style.borderRadius = ``;
       this._unblock();
     }, ANIMATION_TIMEOUT);
   }

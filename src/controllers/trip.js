@@ -80,7 +80,7 @@ export default class TripController {
         start: new Date(),
         end: new Date(),
       },
-      price: 0,
+      price: ``,
       offers: TypeOffers[0].offers,
       isFavorite: false,
     };
