@@ -142,10 +142,12 @@ renderFilterWrapper();
 filterElements.forEach(renderFilter);
 
 provider.getOffers().then((offers) => tripController.getOffers(offers));
-provider.getDestinations().then((destinations) => tripController.getDestinations(destinations));
-provider.getPoints().then((points) => {
-  tripEvents.removeChild(loadingMessage.getElement());
-  tripController.init(points);
+provider.getDestinations().then((destinations) => {
+  tripController.getDestinations(destinations);
+  provider.getPoints().then((points) => {
+    tripEvents.removeChild(loadingMessage.getElement());
+    tripController.init(points);
+  });
 });
 
 render(pageMainContainer, statistics.getElement(), Position.BEFOREEND);
