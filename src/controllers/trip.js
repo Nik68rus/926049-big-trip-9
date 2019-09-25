@@ -105,6 +105,7 @@ export default class TripController {
 
   _renderEvents() {
     this._route.update(this._events);
+    this._updateFilterButtons();
     if (this._sortType === SortType.EVENT) {
       this._renderEventsByDefault();
     } else {
@@ -118,7 +119,7 @@ export default class TripController {
     const dayHeader = this._sorting.getElement().querySelector(`.trip-sort__item--day`);
     const tripDays = this._tripDays.getElement();
     const tripStart = formatDate(this._events[0].time.start);
-    const eventDays = this._getFilteredEvents(this._events).map((it) => formatDate(it.time.start));
+    const eventDays = this._getFilteredEvents(this._filterType, this._events).map((it) => formatDate(it.time.start));
     const uniqueDays = [...new Set(eventDays)];
     const uniqueDaysWithNumbers = uniqueDays.map((it) => {
       return {
@@ -136,7 +137,9 @@ export default class TripController {
       render(tripDays, curentDay.getElement(), Position.BEFOREEND);
       render(curentDay.getElement(), dayDate.getElement(), Position.AFTERBEGIN);
       render(curentDay.getElement(), dayEvents.getElement(), Position.BEFOREEND);
-      this._getFilteredEvents(this._events).filter((curentEvent) => formatDate(curentEvent.time.start) === it.date).forEach((curentEvent) => this._renderEvent(dayEvents.getElement(), curentEvent));
+      this._getFilteredEvents(this._filterType, this._events)
+        .filter((curentEvent) => formatDate(curentEvent.time.start) === it.date)
+        .forEach((curentEvent) => this._renderEvent(dayEvents.getElement(), curentEvent));
     });
     price.textContent = this._getCost();
   }
@@ -152,7 +155,7 @@ export default class TripController {
     render(tripDays, day.getElement(), Position.BEFOREEND);
     render(day.getElement(), dayDate.getElement(), Position.AFTERBEGIN);
     render(day.getElement(), dayEvents.getElement(), Position.BEFOREEND);
-    this._getFilteredEvents(this._getSortedEvents()).forEach((curentEvent) => this._renderEvent(dayEvents.getElement(), curentEvent));
+    this._getFilteredEvents(this._filterType, this._getSortedEvents()).forEach((curentEvent) => this._renderEvent(dayEvents.getElement(), curentEvent));
     price.textContent = this._getCost();
   }
 
@@ -199,6 +202,38 @@ export default class TripController {
     return this._events;
   }
 
+  _updateFilterButtons() {
+    const futureFilterBtn = document.querySelector(`#filter-future`);
+    const pastFilterBtn = document.querySelector(`#filter-past`);
+    const futureFilterLabel = document.querySelector(`label[for="filter-future"]`);
+    const pastFilterLabel = document.querySelector(`label[for="filter-past"]`);
+
+    const setDisabled = (evt) => {
+      evt.target.style.opacity = 0.6;
+      evt.target.style.cursor = `default`;
+    };
+
+    const setEnabled = (evt) => {
+      evt.target.style.opacity = ``;
+      evt.target.style.cursor = ``;
+    };
+
+    const updateFilter = (filter, button, label) => {
+      if (this._getFilteredEvents(filter, this._events).length === 0) {
+        button.disabled = true;
+        label.addEventListener(`mouseover`, setDisabled, false);
+        label.removeEventListener(`mouseover`, setEnabled, false);
+      } else {
+        button.disabled = false;
+        label.addEventListener(`mouseover`, setEnabled, false);
+        label.removeEventListener(`mouseover`, setDisabled, false);
+      }
+    };
+
+    updateFilter(FilterType.FUTURE, futureFilterBtn, futureFilterLabel);
+    updateFilter(FilterType.PAST, pastFilterBtn, pastFilterLabel);
+  }
+
   _onFilterChange(evt) {
     evt.preventDefault();
     this._filterType = evt.target.id;
@@ -206,14 +241,14 @@ export default class TripController {
     this._renderEvents();
   }
 
-  _getFilteredEvents(sortedEvents) {
+  _getFilteredEvents(filterType, eventsToFilter) {
     const timeNow = new Date();
-    switch (this._filterType) {
+    switch (filterType) {
       case FilterType.FUTURE:
-        return sortedEvents.filter((point) => point.time.start > timeNow);
+        return eventsToFilter.filter((point) => point.time.start > timeNow);
       case FilterType.PAST:
-        return sortedEvents.filter((point) => point.time.start < timeNow);
+        return eventsToFilter.filter((point) => point.time.start < timeNow);
     }
-    return sortedEvents;
+    return eventsToFilter;
   }
 }

@@ -104,6 +104,7 @@ export default class PointController {
           this._onDataChange(this._eventEdit, null, null);
           addBtn.disabled = false;
         } else {
+          this._eventEdit.resetForm();
           this._container.replaceChild(eventViewElement, eventEditElement);
         }
         document.removeEventListener(`keydown`, onEscKeyDown);
@@ -142,6 +143,8 @@ export default class PointController {
       .querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, () => {
         this._onChangeView();
+        fpStart.setDate(new Date(timeStartInput.value));
+        fpEnd.setDate(new Date(timeEndInput.value));
         this._container.replaceChild(eventEditElement, eventViewElement);
         document.addEventListener(`keydown`, onEscKeyDown);
       });
@@ -149,6 +152,7 @@ export default class PointController {
     eventEditElement
       .querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, () => {
+        this._eventEdit.resetForm();
         this._onChangeView();
         document.removeEventListener(`keydown`, onEscKeyDown);
       });

@@ -26,6 +26,23 @@ export default class EventEdit extends AbstractComponent {
     this._detailsInit();
   }
 
+  resetForm() {
+    const editForm = this.getElement().querySelector(`.event--edit`);
+    editForm.reset();
+    editForm.querySelector(`#event-start-time-1`).value = this._time.start;
+    editForm.querySelector(`#event-end-time-1`).value = this._time.end;
+    editForm.querySelector(`.event__type-icon`).src = `img/icons/${this._type}.png`;
+    editForm.querySelector(`.event__type-output`).textContent = `${makeFirstCharCapital(this._type)} ${PLACE_TYPES.indexOf(this._type) < 0 ? `to` : `in`}`;
+    editForm.querySelector(`.event__details`).innerHTML = `
+      ${getOffersContainerMarkup(this._offers)}
+      <section class="event__section  event__section--destination">
+        ${getDestinationMarkup(this._description)}
+        ${getPhotoContainerMarkup(this._images)}
+      </section>
+    `;
+    this._detailsInit();
+  }
+
   _typeInit() {
     const element = this.getElement();
     const typeButtons = element.querySelectorAll(`.event__type-input`);
@@ -257,7 +274,7 @@ const getEventOfferMarkup = ({title, name, price, isAdded}) => `
 const getEventOffersMarkup = makeMarkupGenerator(getEventOfferMarkup, `\n`);
 
 const getOffersContainerMarkup = (offers) => `
-    <section class="event__section  event__section--offers ${offers.size === 0 ? `visually-hidden` : ``}">
+    <section class="event__section  event__section--offers ${[...offers].length === 0 ? `visually-hidden` : ``}">
       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
       <div class="event__available-offers">
         ${getEventOffersMarkup(offers)}
