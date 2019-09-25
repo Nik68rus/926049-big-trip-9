@@ -4,6 +4,51 @@ import {makeMarkupGenerator} from '../util/dom';
 import AbstractComponent from './abstarct-component';
 import {makeFirstCharCapital} from '../util/tools';
 
+const getOfferItemMarkup = ({title, price}) => `
+  <li class="event__offer">
+    <span class="event__offer-title">${title}</span>
+    &plus;
+    &euro;&nbsp;<span class="event__offer-price">${price}</span>
+  </li>
+`;
+
+const getOffersMarkup = makeMarkupGenerator(getOfferItemMarkup, `\n`);
+
+const getSelectedOffersMarkup = (offers) =>
+  getOffersMarkup([...offers].filter((offer) => offer.isAdded).slice(0, 3));
+
+const addZero = (number) =>
+  number < 10 ? `0` + number : number;
+
+const getDays = (period) =>
+  Math.trunc(period / (Time.DAY));
+
+const getHours = (period) =>
+  Math.trunc((period - getDays(period) * Time.DAY) / Time.HOUR);
+
+const getMinutes = (period) =>
+  Math.trunc((period - getDays(period) * Time.DAY - getHours(period) * Time.HOUR) / Time.MINUTE);
+
+const getDurationMarkup = (time) => {
+  const duration = time.end - time.start;
+  let durationString = ``;
+  const days = getDays(duration);
+  const hours = getHours(duration);
+  const minutes = getMinutes(duration);
+  durationString = (days === 0) ? addZero(minutes) + `M` : durationString;
+  durationString = (hours > 0) ? addZero(hours) + `H ` + durationString : durationString;
+  durationString = (days > 0) ? addZero(days) + `D ` + durationString : durationString;
+  return durationString;
+};
+
+const priceReducer = (acc, it) =>
+  acc + it;
+
+const getEventOffersPrice = (offers) =>
+  offers
+    .map((offer) => offer.isAdded ? +offer.price : 0)
+    .reduce(priceReducer, 0);
+
 export default class Event extends AbstractComponent {
   constructor({type, city, description, images, time, price, offers, isFavorite}) {
     super();
@@ -56,48 +101,3 @@ export default class Event extends AbstractComponent {
     return +this._price + getEventOffersPrice(this._offers);
   }
 }
-
-const getOfferItemMarkup = ({title, price}) => `
-  <li class="event__offer">
-    <span class="event__offer-title">${title}</span>
-    &plus;
-    &euro;&nbsp;<span class="event__offer-price">${price}</span>
-  </li>
-`;
-
-const getOffersMarkup = makeMarkupGenerator(getOfferItemMarkup, `\n`);
-
-const getSelectedOffersMarkup = (offers) =>
-  getOffersMarkup([...offers].filter((offer) => offer.isAdded).slice(0, 3));
-
-const addZero = (number) =>
-  number < 10 ? `0` + number : number;
-
-const getDays = (period) =>
-  Math.trunc(period / (Time.DAY));
-
-const getHours = (period) =>
-  Math.trunc((period - getDays(period) * Time.DAY) / Time.HOUR);
-
-const getMinutes = (period) =>
-  Math.trunc((period - getDays(period) * Time.DAY - getHours(period) * Time.HOUR) / Time.MINUTE);
-
-const getDurationMarkup = (time) => {
-  const duration = time.end - time.start;
-  let durationString = ``;
-  const days = getDays(duration);
-  const hours = getHours(duration);
-  const minutes = getMinutes(duration);
-  durationString = (days === 0) ? addZero(minutes) + `M` : durationString;
-  durationString = (hours > 0) ? addZero(hours) + `H ` + durationString : durationString;
-  durationString = (days > 0) ? addZero(days) + `D ` + durationString : durationString;
-  return durationString;
-};
-
-const priceReducer = (acc, it) =>
-  acc + it;
-
-const getEventOffersPrice = (offers) =>
-  offers
-    .map((offer) => offer.isAdded ? +offer.price : 0)
-    .reduce(priceReducer, 0);

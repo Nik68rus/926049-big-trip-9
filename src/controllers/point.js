@@ -8,7 +8,6 @@ import 'flatpickr/dist/themes/light.css';
 
 const addBtn = document.querySelector(`.trip-main__event-add-btn`);
 
-
 export default class PointController {
   constructor(container, eventInfo, mode, onDataChange, onChangeView, destinations, offers) {
     this._container = container;
@@ -22,36 +21,6 @@ export default class PointController {
     this._mode = mode;
 
     this.init(mode);
-  }
-
-  _getFormData(editForm) {
-    const formData = new FormData(editForm.querySelector(`.event--edit`));
-    return {
-      id: this._event.id,
-      type: formData.get(`event-type`),
-      city: formData.get(`event-destination`),
-      description: editForm.querySelector(`.event__destination-description`).textContent,
-      images: [...editForm.querySelectorAll(`.event__photo`)].map((img) => {
-        return {
-          src: img.src,
-          description: img.alt,
-        };
-      }),
-      time: {
-        start: new Date(formData.get(`event-start-time`)).getTime(),
-        end: new Date(formData.get(`event-end-time`)).getTime(),
-      },
-      price: +formData.get(`event-price`),
-      offers: [...editForm.querySelectorAll(`.event__offer-selector`)].map((offer) => {
-        return {
-          name: offer.querySelector(`.event__offer-checkbox`).name.replace(`event-offer-`, ``),
-          title: offer.querySelector(`.event__offer-title`).textContent,
-          price: +offer.querySelector(`.event__offer-price`).textContent,
-          isAdded: offer.querySelector(`.event__offer-checkbox`).checked,
-        };
-      }),
-      isFavorite: editForm.querySelector(`.event__favorite-checkbox`).checked,
-    };
   }
 
   init(mode) {
@@ -186,5 +155,35 @@ export default class PointController {
         addBtn.disabled = false;
       }
     }
+  }
+
+  _getFormData(editForm) {
+    const formData = new FormData(editForm.querySelector(`.event--edit`));
+    return {
+      id: this._event.id,
+      type: formData.get(`event-type`),
+      city: formData.get(`event-destination`),
+      description: editForm.querySelector(`.event__destination-description`).textContent,
+      images: [...editForm.querySelectorAll(`.event__photo`)].map((img) => {
+        return {
+          src: img.src,
+          description: img.alt,
+        };
+      }),
+      time: {
+        start: new Date(formData.get(`event-start-time`)).getTime(),
+        end: new Date(formData.get(`event-end-time`)).getTime(),
+      },
+      price: +formData.get(`event-price`),
+      offers: [...editForm.querySelectorAll(`.event__offer-selector`)].map((offer) => {
+        return {
+          name: offer.querySelector(`.event__offer-checkbox`).name.replace(`event-offer-`, ``),
+          title: offer.querySelector(`.event__offer-title`).textContent,
+          price: +offer.querySelector(`.event__offer-price`).textContent,
+          isAdded: offer.querySelector(`.event__offer-checkbox`).checked,
+        };
+      }),
+      isFavorite: editForm.querySelector(`.event__favorite-checkbox`).checked,
+    };
   }
 }

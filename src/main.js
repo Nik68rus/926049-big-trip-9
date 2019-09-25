@@ -10,40 +10,21 @@ import {
 
 import TripController from './controllers/trip';
 import {render, Position} from './util/dom';
-import {AUTHORIZATION, END_POINT} from './constants';
+import {menuElements, filterElements, AUTHORIZATION, END_POINT, StoreKey} from './constants';
 
 const pageMainContainer = document.querySelector(`.page-main .page-body__container`);
 const tripControls = document.querySelector(`.trip-main__trip-controls`);
 const tripEvents = document.querySelector(`.trip-events`);
+
 const loadingMessage = new LoadingMessage();
-
-const StoreKey = {
-  POINTS: `points`,
-  OFFERS: `offers`,
-  DESTINATIONS: `destinations`,
-};
-
 const api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
-
 const store = {
   points: new Store({storage: window.localStorage, key: StoreKey.POINTS}),
   offers: new Store({storage: window.localStorage, key: StoreKey.OFFERS}),
   destinations: new Store({storage: window.localStorage, key: StoreKey.DESTINATIONS}),
 };
-
 const provider = new Provider(api, store);
 const statistics = new Statistic([]);
-
-const menuElements = [
-  {name: `Table`, isActive: true},
-  {name: `Stats`},
-];
-
-const filterElements = [
-  {name: `Everything`, isChecked: true},
-  {name: `Future`},
-  {name: `Past`},
-];
 
 const renderFilterWrapper = () => {
   const filterWrapper = `
@@ -151,9 +132,9 @@ if (!window.navigator.onLine) {
 }
 
 render(tripEvents, loadingMessage.getElement(), Position.AFTERBEGIN);
+
 renderMenuWrapper();
 menuElements.forEach(renderMenu);
-
 const menu = document.querySelector(`.trip-controls__trip-tabs`);
 menu.addEventListener(`click`, onMenuClick);
 
@@ -171,9 +152,11 @@ render(pageMainContainer, statistics.getElement(), Position.BEFOREEND);
 statistics.init();
 
 document.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, onAddEventBtnClick);
+
 window.addEventListener(`offline`, () => {
   document.title = `${document.title}[OFFLINE]`;
 });
+
 window.addEventListener(`online`, () => {
   document.title = document.title.split(`[OFFLINE]`)[0];
   provider.syncPoints()

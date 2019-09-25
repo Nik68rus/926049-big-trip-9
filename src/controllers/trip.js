@@ -3,8 +3,6 @@ import {compareEventsByTime} from '../util/tools';
 import {formatDate, getDateDifference} from '../components/date-formater';
 import PointController from './point';
 import {SortType, FilterType, Mode} from '../constants';
-import {TypeOffers} from '../mock';
-
 
 import {
   TripDays,
@@ -69,10 +67,9 @@ export default class TripController {
   }
 
   createEvent() {
-
     const defaultEvent = {
       id: (Math.max.apply(null, this._events.map((point) => point.id)) + 1).toString(),
-      type: TypeOffers[0].name,
+      type: this._offers[0].name,
       city: ``,
       description: ``,
       images: [],
@@ -81,7 +78,7 @@ export default class TripController {
         end: new Date(),
       },
       price: ``,
-      offers: TypeOffers[0].offers,
+      offers: this._offers[0].offers,
       isFavorite: false,
     };
     this._onChangeView();
