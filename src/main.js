@@ -1,6 +1,7 @@
 import {
   SiteMenu,
   Filter,
+  LoadingMessage,
   Statistic,
   API,
   Provider,
@@ -9,29 +10,21 @@ import {
 
 import TripController from './controllers/trip';
 import {render, Position} from './util/dom';
-import {AUTHORIZATION, END_POINT} from './constants';
+import {menuElements, filterElements, AUTHORIZATION, END_POINT, StoreKey} from './constants';
 
 const pageMainContainer = document.querySelector(`.page-main .page-body__container`);
 const tripControls = document.querySelector(`.trip-main__trip-controls`);
 const tripEvents = document.querySelector(`.trip-events`);
 
-const POINTS_STORE_KEY = `points-store-key`;
-
+const loadingMessage = new LoadingMessage();
 const api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
-const store = new Store({storage: window.localStorage, key: POINTS_STORE_KEY});
+const store = {
+  points: new Store({storage: window.localStorage, key: StoreKey.POINTS}),
+  offers: new Store({storage: window.localStorage, key: StoreKey.OFFERS}),
+  destinations: new Store({storage: window.localStorage, key: StoreKey.DESTINATIONS}),
+};
 const provider = new Provider(api, store);
 const statistics = new Statistic([]);
-
-const menuElements = [
-  {name: `Table`, isActive: true},
-  {name: `Stats`},
-];
-
-const filterElements = [
-  {name: `Everything`, isChecked: true},
-  {name: `Future`},
-  {name: `Past`},
-];
 
 const renderFilterWrapper = () => {
   const filterWrapper = `
@@ -127,19 +120,21 @@ const onDataChange = (editingPoint, actionType, update) => {
       provider.createPoint(update)
         .then(() => provider.getPoints())
         .then((points) => tripController.init(points))
-        .catch((err) => {
-          console.error(`fetch error: ${err}`);
-          throw err;
-        });
+        .catch(onError);
       break;
   }
 };
 
 const tripController = new TripController(tripEvents, [], onDataChange);
 
+if (!window.navigator.onLine) {
+  document.title = `${document.title}[OFFLINE]`;
+}
+
+render(tripEvents, loadingMessage.getElement(), Position.AFTERBEGIN);
+
 renderMenuWrapper();
 menuElements.forEach(renderMenu);
-
 const menu = document.querySelector(`.trip-controls__trip-tabs`);
 menu.addEventListener(`click`, onMenuClick);
 
@@ -147,10 +142,25 @@ renderFilterWrapper();
 filterElements.forEach(renderFilter);
 
 provider.getOffers().then((offers) => tripController.getOffers(offers));
-provider.getDestinations().then((destinations) => tripController.getDestinations(destinations));
-provider.getPoints().then((points) => tripController.init(points));
+provider.getDestinations().then((destinations) => {
+  tripController.getDestinations(destinations);
+  provider.getPoints().then((points) => {
+    tripEvents.removeChild(loadingMessage.getElement());
+    tripController.init(points);
+  });
+});
 
 render(pageMainContainer, statistics.getElement(), Position.BEFOREEND);
 statistics.init();
 
 document.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, onAddEventBtnClick);
+
+window.addEventListener(`offline`, () => {
+  document.title = `${document.title}[OFFLINE]`;
+});
+
+window.addEventListener(`online`, () => {
+  document.title = document.title.split(`[OFFLINE]`)[0];
+  provider.syncPoints()
+    .then(tripController.update());
+});

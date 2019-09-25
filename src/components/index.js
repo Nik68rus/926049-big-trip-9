@@ -7,6 +7,7 @@ import EventEdit from './event-edit';
 import Event from './event';
 import TripDays from './trip-days';
 import TripEmpty from './trip-empty';
+import LoadingMessage from './loading-message';
 import Day from './day';
 import DayDate from './day-date';
 import DayEvents from './day-events';
@@ -28,6 +29,7 @@ export {
   EventEdit,
   TripDays,
   TripEmpty,
+  LoadingMessage,
   Day,
   DayDate,
   DayEvents,

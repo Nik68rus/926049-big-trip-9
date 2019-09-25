@@ -4,6 +4,17 @@ export const Time = {
   MINUTE: 60 * 1000,
 };
 
+export const menuElements = [
+  {name: `Table`, isActive: true},
+  {name: `Stats`},
+];
+
+export const filterElements = [
+  {name: `Everything`, isChecked: true},
+  {name: `Future`},
+  {name: `Past`},
+];
+
 export const PLACE_TYPES = [
   `check-in`,
   `restaurant`,
@@ -61,4 +72,13 @@ export const Method = {
 
 export const AUTHORIZATION = `Basic dXNlckBwYXNzd29yZAo=${Math.random()}`;
 export const END_POINT = `https://htmlacademy-es-9.appspot.com/big-trip`;
+
+export const ANIMATION_TIMEOUT = 600;
+
+export const StoreKey = {
+  POINTS: `points`,
+  OFFERS: `offers`,
+  DESTINATIONS: `destinations`,
+};
+
 
