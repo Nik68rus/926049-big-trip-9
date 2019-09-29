@@ -15,8 +15,6 @@ import {menuElements, filterElements, AUTHORIZATION, END_POINT, StoreKey} from '
 const pageMainContainer = document.querySelector(`.page-main .page-body__container`);
 const tripControls = document.querySelector(`.trip-main__trip-controls`);
 const tripEvents = document.querySelector(`.trip-events`);
-const addBtn = document.querySelector(`.trip-main__event-add-btn`);
-
 
 const loadingMessage = new LoadingMessage();
 const api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
@@ -76,10 +74,8 @@ const onMenuClick = (evt) => {
     case `Table`:
       statistics.getElement().classList.add(`visually-hidden`);
       tripFilters.classList.remove(`visually-hidden`);
-      tripController.initSorting();
+      sorting.classList.remove(`visually-hidden`);
       tripController.show();
-      addBtn.disabled = false;
-      tripController.renderEmptyMessage();
       break;
     case `Stats`:
       statistics.update(tripController._events);
@@ -87,14 +83,11 @@ const onMenuClick = (evt) => {
       tripFilters.classList.add(`visually-hidden`);
       sorting.classList.add(`visually-hidden`);
       tripController.hide();
-      addBtn.disabled = true;
-      tripController.removeEmptyMessage();
       break;
   }
 };
 
 const onAddEventBtnClick = () => {
-  tripController.removeEmptyMessage();
   tripController.createEvent();
 };
 
@@ -111,7 +104,7 @@ const onDataChange = (editingPoint, actionType, update) => {
         id: update.id
       })
         .then(() => provider.getPoints())
-        .then((points) => tripController.update(points))
+        .then((points) => tripController.init(points))
         .catch(onError);
       break;
     case `update`:
@@ -120,13 +113,13 @@ const onDataChange = (editingPoint, actionType, update) => {
         point: update,
       })
         .then(() => provider.getPoints())
-        .then((points) => tripController.update(points))
+        .then((points) => tripController.init(points))
         .catch(onError);
       break;
     case `create`:
       provider.createPoint(update)
         .then(() => provider.getPoints())
-        .then((points) => tripController.update(points))
+        .then((points) => tripController.init(points))
         .catch(onError);
       break;
   }
@@ -169,6 +162,5 @@ window.addEventListener(`offline`, () => {
 window.addEventListener(`online`, () => {
   document.title = document.title.split(`[OFFLINE]`)[0];
   provider.syncPoints()
-    .then(tripController.updateView());
+    .then(tripController.update());
 });
-
