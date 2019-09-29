@@ -102,6 +102,10 @@ export default class TripController {
   }
 
   renderEmptyMessage() {
+    const msg = this._container.querySelector(`.trip-events__msg`);
+    if (msg) {
+      msg.remove();
+    }
     if (this._events.length === 0) {
       render(this._container, this._tripEmpty.getElement(), Position.BEFOREEND);
       return;

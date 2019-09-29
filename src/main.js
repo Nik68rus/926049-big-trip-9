@@ -165,10 +165,10 @@ document.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, on
 window.addEventListener(`offline`, () => {
   document.title = `${document.title}[OFFLINE]`;
 });
-/*
+
 window.addEventListener(`online`, () => {
   document.title = document.title.split(`[OFFLINE]`)[0];
   provider.syncPoints()
     .then(tripController.updateView());
 });
-*/
+
