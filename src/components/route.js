@@ -19,8 +19,8 @@ export default class Route extends AbstractComponent {
 
   update(events) {
     this._events = events;
-    this.getElement().querySelector(`.trip-info__title`).textContent = this._getRoute();
-    this.getElement().querySelector(`.trip-info__dates`).textContent = this._getTripDates();
+    this.getElement().querySelector(`.trip-info__title`).textContent = this._events.length === 0 ? `` : this._getRoute();
+    this.getElement().querySelector(`.trip-info__dates`).textContent = this._events.length === 0 ? `` : this._getTripDates();
   }
 
   _getStartEndDivider() {

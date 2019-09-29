@@ -1,5 +1,3 @@
-const titleReducer = (a, b) => b.length > a.length ? b : a;
-
 export default class ModelPoint {
   constructor(data) {
     this.id = data.id;
@@ -14,36 +12,13 @@ export default class ModelPoint {
     this.price = data.base_price;
     this.offers = data.offers.map((offer) => {
       return {
-        name: offer.title.split(` `).reduce(titleReducer),
+        name: offer.title.split(` `).join(`-`).toLowerCase(),
         title: offer.title,
         price: offer.price,
         isAdded: offer.accepted,
       };
     });
     this.isFavorite = data.is_favorite;
-  }
-
-  toRAW() {
-    return {
-      'base_price': this.price,
-      'date_from': this.time.start,
-      'date_to': this.time.end,
-      'destination': {
-        description: this.description,
-        name: this.city,
-        pictures: this.images,
-      },
-      'id': this.id,
-      'is_favorite': this.isFavorite,
-      'offers': this.offers.map((offer) => {
-        return {
-          accepted: offer.isAdded,
-          price: offer.price,
-          title: offer.title,
-        };
-      }),
-      'type': this.type,
-    };
   }
 
   static parsePoint(data) {

@@ -3,12 +3,12 @@ import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {PLACE_TYPES, ACTION_TYPES, Time, chartMaxHeight, TypeEmoji} from '../constants';
 
-const reducer = (accumulator, currentValue) => accumulator + currentValue;
-const priceMap = (curentEvent) => curentEvent.price;
-const durationMap = (curentEvent) => curentEvent.time.end - curentEvent.time.start;
-const moneyFormatter = (value) => `€` + value;
-const transportFormatter = (value) => value + `x`;
-const timeFormatter = (value) => value + `H`;
+const reduceSum = (accumulator, currentValue) => accumulator + currentValue;
+const mapPrice = (curentEvent) => curentEvent.price;
+const mapDuration = (curentEvent) => curentEvent.time.end - curentEvent.time.start;
+const formatMoney = (value) => `€` + value;
+const formatTransport = (value) => value + `x`;
+const formatTime = (value) => value + `H`;
 
 export default class Statistic extends AbstractComponent {
   constructor(events) {
@@ -44,9 +44,9 @@ export default class Statistic extends AbstractComponent {
     moneyCtx.style.maxHeight = transportCtx.style.maxHeight = timeCtx.style.maxHeight = chartMaxHeight;
 
     this._updateData(this._events);
-    this._moneyChart = new Chart(moneyCtx, this._makeChartConfig(`MONEY`, this._moneyChartData, moneyFormatter));
-    this._transportChart = new Chart(transportCtx, this._makeChartConfig(`TRANSPORT`, this._transportChartData, transportFormatter));
-    this._timeChart = new Chart(timeCtx, this._makeChartConfig(`TIME`, this._timeChartData, timeFormatter));
+    this._moneyChart = new Chart(moneyCtx, this._makeChartConfig(`MONEY`, this._moneyChartData, formatMoney));
+    this._transportChart = new Chart(transportCtx, this._makeChartConfig(`TRANSPORT`, this._transportChartData, formatTransport));
+    this._timeChart = new Chart(timeCtx, this._makeChartConfig(`TIME`, this._timeChartData, formatTime));
   }
 
   update(actualEvents) {
@@ -58,12 +58,7 @@ export default class Statistic extends AbstractComponent {
 
   _getTypeData(type, dataMap) {
     const fittingEvents = this._events.filter((curentEvent) => curentEvent.type === type);
-
-    if (fittingEvents.length === 0) {
-      return 0;
-    } else {
-      return fittingEvents.map(dataMap).reduce(reducer);
-    }
+    return fittingEvents.length === 0 ? 0 : fittingEvents.map(dataMap).reduce(reduceSum);
   }
 
   _getQuantity(type) {
@@ -74,7 +69,7 @@ export default class Statistic extends AbstractComponent {
     return types.map((type) => {
       return {
         name: type,
-        data: this._getTypeData(type, priceMap),
+        data: this._getTypeData(type, mapPrice),
       };
     })
     .filter((type) => type.data > 0)
@@ -85,7 +80,7 @@ export default class Statistic extends AbstractComponent {
     return types.map((type) => {
       return {
         name: type,
-        data: Math.round(this._getTypeData(type, durationMap) / Time.HOUR),
+        data: Math.round(this._getTypeData(type, mapDuration) / Time.HOUR),
       };
     })
     .filter((type) => type.data > 0)

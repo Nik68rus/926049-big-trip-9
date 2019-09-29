@@ -35,7 +35,6 @@ export default class API {
   }
 
   createPoint(point) {
-    console.log(toRAW(point));
     return this._load({
       url: URL.POINTS,
       method: Method.POST,
@@ -69,6 +68,16 @@ export default class API {
     return this._load({url: URL.OFFERS})
     .then(toJSON)
     .then(ModelOffer.parseOffers);
+  }
+
+  syncPoints({points}) {
+    return this._load({
+      url: `points/sync`,
+      method: `POST`,
+      body: JSON.stringify(points),
+      headers: new Headers({'Content-Type': `application/json`})
+    })
+      .then(toJSON);
   }
 
   _load({url, method = Method.GET, body = null, headers = new Headers()}) {
